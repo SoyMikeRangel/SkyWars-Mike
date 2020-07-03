@@ -13,5 +13,5 @@
     <h3>Dependencias:</h3>
     <p>Ninguna.</p>
     <h3>Comandos:</h3>
-    <p>/sw help: Help commands. <br> /sw create <arena> <maxslots> <id>: Create an arena. <br> /sw npc <stats|game|remove>: Entities command. <br> /sw leave: Get out of the arena. <br> /sw credits: View author. </p>
+    <p>/sw help: Help commands. <br> /sw create <arena> <maxslots> <id>: Create an arena. <br> /sw npc <stats|game|remove>: Entities command. <br> /sw settings: Settings UI. <br> /sw leave: Get out of the arena. <br> /sw credits: View author. </p>
 </div>
