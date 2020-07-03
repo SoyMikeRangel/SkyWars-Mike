@@ -11,7 +11,7 @@
     <h3>Instrucciones:</h3>
     <p>De manera propia hice que solo pueda configurar la arena uno a la vez, pueden editarlo en ese caso pero de mi parte, es todo.<p>
     <h3>Dependencias:</h3>
-    <p>Ninguna</p>
+    <p>Ninguna.</p>
     <h3>Comandos:</h3>
-    <p>/cf help: Help commands. <br> /sw create <arena> <maxslots> <id>: Create an arena. <br> /sw npc <stats|game|remove>: Entities command. <br> /sw join: Enter the arena. <br> /sw leave: Get out of the arena. <br> /sw credits: View author. </p>
+    <p>/sw help: Help commands. <br> /sw create <arena> <maxslots> <id>: Create an arena. <br> /sw npc <stats|game|remove>: Entities command. <br> /sw leave: Get out of the arena. <br> /sw credits: View author. </p>
 </div>
