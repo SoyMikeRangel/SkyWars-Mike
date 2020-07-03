@@ -1,0 +1,49 @@
+---
+#Cages Cost.
+#Aquatic.
+Aquaticcost: 0
+#Carcel.
+Carcelcost: 0
+#Colors.
+Colorscost: 0
+#Desert.
+Desertcost: 0
+#Globo.
+Globocost: 0
+#Hueso.
+Huesocost: 0
+#Infra.
+Infracost: 0
+#Medieval.
+Medievalcost: 0
+#Minas.
+Minascost: 0
+#Moral.
+Moralcost: 0
+#Nieve.
+Nievecost: 0
+#Ocean.
+Desertcost: 0
+#Ores.
+Orescost: 0
+#PrysmaPurple.
+PrysmaPurplecost: 0
+#Selva.
+Selvacost: 0
+#Spawner.
+Spawnercost: 0
+#Temple.
+Templecost: 0
+#Templo.
+Templocost: 0
+#Tree.
+Treecost: 0
+#TreeLight.
+TreeLightcost: 0
+#Woold.
+Wooldcost: 0
+
+#Emotes Cost.
+#Dab.
+Dabemote: 20
+...
