@@ -28,6 +28,7 @@ class Commands extends PluginCommand {
                     '/sw help: Help commands.',
                     '/sw create <arena> <maxslots> <id>: Create arena.',
                     '/sw npc <game|stats|remove>: Set spawn point entity.',
+                    '/sw leave: Leave an arena.',
                     '/sw credits: View author.'
                 ];
                 $player->sendMessage(Color::GOLD . 'SkyWars Commands:');
