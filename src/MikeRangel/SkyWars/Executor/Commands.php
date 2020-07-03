@@ -28,6 +28,7 @@ class Commands extends PluginCommand {
                     '/sw help: Help commands.',
                     '/sw create <arena> <maxslots> <id>: Create arena.',
                     '/sw npc <game|stats|remove>: Set spawn point entity.',
+                    '/sw settings: Settings UI.',
                     '/sw leave: Leave an arena.',
                     '/sw credits: View author.'
                 ];
@@ -85,6 +86,9 @@ class Commands extends PluginCommand {
                 } else {
                     $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'You do not have permissions to run this command.');
                 }
+            break;
+            case 'settings':
+                FormManager::getSettingsUI($player);
             break;
             case 'leave':
                 foreach (Arena::getArenas() as $arena) {
