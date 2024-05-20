@@ -9,30 +9,31 @@ namespace MikeRangel\SkyWars\Tasks;
 use Core\Core;
 use MikeRangel\{Loader};
 use MikeRangel\SkyWars\{SkyWars, ResetMap, PluginUtils, Arena\Arena};
-use pocketmine\{Server, Player, level\Level, item\Item, level\Position, entity\Skin, math\Vector3, scheduler\Task, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, player\GameMode, world\World, item\Item, item\VanillaItems, block\VanillaBlocks, world\Position, entity\Skin, math\Vector3, scheduler\Task, utils\TextFormat as Color};
 use pocketmine\network\mcpe\protocol\{ActorEventPacket, LevelEventPacket, LevelSoundEventPacket, ChangeDimensionPacket, PlayStatusPacket, types\DimensionIds};
+use pocketmine\world\sound\{NoteSound, NoteInstrument, TotemUseSound, ChestOpenSound, PopSound};
 
 class GameScheduler extends Task {
 
-    public function onRun(int $currentTick) : void {
+    public function onRun() : void {
         if (count(Arena::getArenas()) > 0) {
             foreach (Arena::getArenas() as $arena) {
-                $arenas = Server::getInstance()->getLevelByName(Arena::getName($arena));
+                $arenas = Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena));
                 $timelobby = Arena::getTimeWaiting($arena);
                 $timestarting = Arena::getTimeStarting($arena);
                 $timegame = Arena::getTimeGame($arena);
                 $timerefill = Arena::getTimeRefill($arena);
                 $timeend = Arena::getTimeEnd($arena);
-                if ($arenas instanceof Level) {
+                if ($arenas instanceof World) {
                     if (Arena::getStatus($arena) == 'waiting') {
                         foreach ($arenas->getPlayers() as $player) {
                             SkyWars::$data['skins'][$player->getName()] = $player->getSkin();
                             SkyWars::$data['damager'][$player->getName()] = 'string';
                             SkyWars::$data['kills'][Arena::getName($arena)][$player->getName()] = 0;
-                            $player->getInventory()->setItem(0, Item::get(340, 0, 1)->setCustomName(Color::LIGHT_PURPLE . "Kits\n§r§fClick to select"));
-                            $player->getInventory()->setItem(3, Item::get(345, 0, 1)->setCustomName(Color::GREEN . "Start\n§r§fClick to select"));
-                            $player->getInventory()->setItem(5, Item::get(54, 0, 1)->setCustomName(Color::GOLD . "Vote Chest\n§r§fClick to select"));
-                            $player->getInventory()->setItem(8, Item::get(355, 14, 1)->setCustomName(Color::RED . "Leave\n§r§fClick to select"));
+                            $player->getInventory()->setItem(0, VanillaItems::BOOK()->setCount(1)->setCustomName(Color::GREEN . "Start\n§r§fClick to select"));
+                            $player->getInventory()->setItem(3, VanillaItems::COMPASS()->setCount(1)->setCustomName(Color::GREEN . "Start\n§r§fClick to select"));
+                            $player->getInventory()->setItem(5, VanillaBlocks::CHEST()->asItem()->setCount(1)->setCustomName(Color::RED . "Leave\n§r§fClick to select"));
+                            $player->getInventory()->setItem(8, VanillaBlocks::BED()->asItem()->setCount(1)->setCustomName(Color::RED . "Leave\n§r§fClick to select"));
                         }
                         if (count(Arena::getPlayers($arena)) < 2) {
                             foreach ($arenas->getPlayers() as $player) {
@@ -75,23 +76,23 @@ class GameScheduler extends Task {
                             $alive++;
                             if ($timestarting >= 0 && $timestarting <= 10) {
                                 if (count(Arena::getPlayers($arena)) == 1) {
-                                    $player->setImmobile(false);
-                                    $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
-                                    $player->setGamemode(2);
+                                    //$player->setImmobile(false);
+                                    $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
+                                    $player->setGamemode(GameMode::adventure());
                                 }
                             }
                             if ($timestarting >= 7 && $timestarting <= 10) {
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_NOTE, $timestarting);
+                                $player->getWorld()->addSound($player->getPosition(), new NoteSound(NoteInstrument::PIANO(), $timestarting));
                                 $player->sendPopup(Color::GREEN . 'Opening cage in -> ' . $timestarting);
                             } else if ($timestarting >= 3 && $timestarting <= 7) {
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_NOTE, $timestarting);
+                                $player->getWorld()->addSound($player->getPosition(), new NoteSound(NoteInstrument::PIANO(), $timestarting));
                                 $player->sendPopup(Color::YELLOW . 'Opening cage in -> ' . $timestarting);
                             } else if ($timestarting >= 1 && $timestarting <= 3) {
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_NOTE, $timestarting);
+                                $player->getWorld()->addSound($player->getPosition(), new NoteSound(NoteInstrument::PIANO(), $timestarting));
                                 $player->sendPopup(Color::RED . 'Opening cage in -> ' . $timestarting);
                             }
                             /*if ($timestarting == 11) {
-                                $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
+                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                                 $pk = new ChangeDimensionPacket();
 		                        $pk->dimension = DimensionIds::NETHER;
                                 $pk->position = $player->asVector3();
@@ -99,7 +100,7 @@ class GameScheduler extends Task {
                                 SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new Dimension($player, $arena), 10);
                             } else */
                             if ($timestarting == 10) {
-                                $player->setImmobile(true);
+                                //$player->setImmobile(true);
                                 $lobby = SkyWars::getConfigs('Arenas/' . $arena);
                                 $spawn = $lobby->get('slot-' . $alive);
                                 $spawns = new Position($spawn[0], $spawn[1], $spawn[2], $arenas);
@@ -116,16 +117,16 @@ class GameScheduler extends Task {
                                 PluginUtils::unsetCage($player, $profile->get('cage'));
                                 PluginUtils::playSound($player, 'conduit.activate', 1, 1);
                                 PluginUtils::getKit($player, $profile->get('kit'));
-                                $player->broadcastEntityEvent(ActorEventPacket::CONSUME_TOTEM);
+                                $player->getWorld()->addSound($player->getPosition(), new TotemUseSound());
                                 if (count(SkyWars::$data['vote'][Arena::getName($arena)]['op']) > count(SkyWars::$data['vote'][Arena::getName($arena)]['normal'])) {
-                                    $player->addTitle(Color::GOLD . '¡Starting!', Color::GRAY . 'Chest: OP');
+                                    $player->sendTitle(Color::GOLD . '¡Starting!', Color::GRAY . 'Chest: OP');
                                     PluginUtils::chestOP(Arena::getName($arena));
                                 } else {
-                                    $player->addTitle(Color::GOLD . '¡Starting!', Color::GRAY . 'Chest: Default');
+                                    $player->sendTitle(Color::GOLD . '¡Starting!', Color::GRAY . 'Chest: Default');
                                     PluginUtils::chestDefault(Arena::getName($arena));
                                 }
-                                $player->setGamemode(0);
-                                $player->setImmobile(false);
+                                $player->setGamemode(GameMode::survival());
+                                //$player->setImmobile(false);
                             }
                         }
                     } else if (Arena::getStatus($arena) == 'ingame') {
@@ -184,52 +185,52 @@ class GameScheduler extends Task {
                                 }
                                 switch (rand(1, 2)) {
                                     case 1:
-                                        $player->addTitle(Color::GOLD . '¡Filled chests!', Color::GRAY . 'Go for that victory');
+                                        $player->sendTitle(Color::GOLD . '¡Filled chests!', Color::GRAY . 'Go for that victory');
                                     break;
                                     case 2:
-                                        $player->addTitle(Color::GOLD . '¡Filled chests!', Color::GRAY . 'Equip yourself better');
+                                        $player->sendTitle(Color::GOLD . '¡Filled chests!', Color::GRAY . 'Equip yourself better');
                                     break;
                                 }
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_CHEST_OPEN);
+                                $player->getWorld()->addSound($player->getPosition(), new ChestOpenSound());
                                 Arena::setTimeRefill($arena, 120);
                             }
                             #animations.
                             if ($timegame == 599) {
                                 $player->sendPopup(Color::GREEN . 'Activating blows and damage in the game in: 10');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 598) {
                                 $player->sendPopup(Color::GREEN . 'Activating blows and damage in the game in: 9');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 597) {
                                 $player->sendPopup(Color::GREEN . 'Activating blows and damage in the game in: 8');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 596) {
                                 $player->sendPopup(Color::GREEN . 'Activating blows and damage in the game in: 7');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 595) {
                                 $player->sendPopup(Color::YELLOW . 'Activating blows and damage in the game in: 6');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 594) {
                                 $player->sendPopup(Color::YELLOW . 'Activating blows and damage in the game in: 5');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 593) {
                                 $player->sendPopup(Color::YELLOW . 'Activating blows and damage in the game in: 4');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 592) {
                                 $player->sendPopup(Color::RED . 'Activating blows and damage in the game in: 3');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 591) {
                                 $player->sendPopup(Color::RED . 'Activating blows and damage in the game in: 2');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             } else if ($timegame == 590) {
                                 $player->sendPopup(Color::RED . 'Activating blows and damage in the game in: 1');
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_POP);
                             }
                             #game.
                             if ($timegame == 589) {
                                 $player->sendMessage(Color::GOLD . '¡Damage activated!');
                                 $this->pvp = 11;
-                                $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_UP);
+                                $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_BUBBLE_UP);
                             } else if ($timegame == 0) {
                                 Arena::setStatus($arena, 'end');
                                 Server::getInstance()->broadcastMessage(SkyWars::getPrefix() . Color::RED . ' There were no winners in the arena: ' . Color::RED . $arena);
@@ -276,9 +277,9 @@ class GameScheduler extends Task {
                                     $top3 . "\n" .
                                     Color::GRAY . '================'
                                     );
-                                    $player->addTitle(Color::GOLD . '¡Victory!', Color::GRAY . '+5 Coins.');
+                                    $player->sendTitle(Color::GOLD . '¡Victory!', Color::GRAY . '+5 Coins.');
                                     $player->sendMessage(Color::LIGHT_PURPLE . '+5 Coins.');
-                                    $player->setGamemode(2);
+                                    $player->setGamemode(GameMode::adventure());
                                     $player->getInventory()->clearAll();
                                     $player->getArmorInventory()->clearAll();
                                     $profile->set('coins', $profile->get('coins') + 5);
@@ -331,16 +332,16 @@ class GameScheduler extends Task {
                             ResetMap::resetZip(Arena::getName($arena));
                             SkyWars::getReloadArena($arena);
                             foreach ($arenas->getPlayers() as $player) {
-                                $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
+                                $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                                 $player->getInventory()->clearAll();
                                 $player->getArmorInventory()->clearAll();
-                                $player->setImmobile(false);
+                                //$player->setImmobile(false);
                                 $player->setAllowFlight(false);
                                 $player->setFlying(false);
-                                $player->removeAllEffects();
-                                $player->setGamemode(2);
+                                $player->getEffects()->clear();
+                                $player->setGamemode(GameMode::adventure());
                                 $player->setHealth(20);
-                                $player->setFood(20);   
+                                $player->getHungerManager()->setFood(20);   
                             }
                         }
                     }

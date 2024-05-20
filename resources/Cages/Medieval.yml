@@ -2,284 +2,237 @@
 Medieval:
   BLOCKS:
     2:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 0
       Z: 1
     3:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 0
       Z: 0
     4:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 0
       Z: 0
     5:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 0
       Z: -1
     6:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: -1
       "Y": 0
       Z: 1
     7:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: -1
       "Y": 0
       Z: -1
     8:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 1
       "Y": 0
       Z: -1
     9:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 1
       "Y": 0
       Z: 1
     11:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 2
       Z: -1
     14:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 2
       Z: 1
     16:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 2
       Z: 1
     18:
-      ID: 85
-      META: 5
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 2
       Z: -1
     19:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 1
       "Y": 3
       Z: -1
     20:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: -1
       "Y": 3
       Z: -1
     21:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: -1
       "Y": 3
       Z: 1
     22:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 1
       "Y": 3
       Z: 1
     23:
-      ID: 57
-      META: 0
+      BLOCK: "DIAMOND_BLOCK"
       X: 0
       "Y": 3
       Z: -1
     24:
-      ID: 57
-      META: 0
+      BLOCK: "DIAMOND_BLOCK"
       X: 1
       "Y": 3
       Z: 0
     25:
-      ID: 57
-      META: 0
+      BLOCK: "DIAMOND_BLOCK"
       X: 0
       "Y": 3
       Z: 1
     26:
-      ID: 57
-      META: 0
+      BLOCK: "DIAMOND_BLOCK"
       X: -1
       "Y": 3
       Z: 0
     27:
-      ID: 158
-      META: 5
+      BLOCK: "STONE_SLAB"
       X: 1
       "Y": 1
       Z: 0
     28:
-      ID: 158
-      META: 5
+      BLOCK: "STONE_SLAB"
       X: 0
       "Y": 1
       Z: -1
     29:
-      ID: 158
-      META: 5
+      BLOCK: "STONE_SLAB"
       X: -1
       "Y": 1
       Z: 0
     30:
-      ID: 158
-      META: 5
+      BLOCK: "STONE_SLAB"
       X: 0
       "Y": 1
       Z: 1
     39:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 1
       "Y": 4
       Z: 0
     40:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 4
       Z: -1
     41:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: -1
       "Y": 4
       Z: 0
     42:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 4
       Z: 1
     43:
-      ID: 44
-      META: 5
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 5
       Z: 0
     44:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_TRAPDOOR"
       X: -1
       "Y": 5
       Z: 0
     45:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_TRAPDOOR"
       X: 0
       "Y": 5
       Z: -1
     46:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_TRAPDOOR"
       X: 1
       "Y": 5
       Z: 0
     47:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_TRAPDOOR"
       X: 0
       "Y": 5
       Z: 1
     50:
-      ID: 57
-      META: 0
+      BLOCK: "DIAMOND_BLOCK"
       X: 0
       "Y": 0
       Z: 0
     52:
-      ID: 89
-      META: 0
+      BLOCK: "GLOWSTONE"
       X: 0
       "Y": 4
       Z: 0
     53:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 2
       Z: 2
     54:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: -2
       "Y": 2
       Z: 1
     55:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 2
       Z: 2
     56:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: 2
       "Y": 2
       Z: 1
     57:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 2
       Z: -2
     58:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: 2
       "Y": 2
       Z: -1
     59:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 2
       Z: -2
     60:
-      ID: 85
-      META: 0
+      BLOCK: "OAK_FENCE"
       X: -2
       "Y": 2
       Z: -1
     61:
-      ID: 98
-      META: 0
+      BLOCK: "STONE_BRICKS"
       X: 1
       "Y": 1
       Z: 1
     62:
-      ID: 98
-      META: 0
+      BLOCK: "STONE_BRICKS"
       X: 1
       "Y": 1
       Z: -1
     63:
-      ID: 98
-      META: 0
+      BLOCK: "STONE_BRICKS"
       X: -1
       "Y": 1
       Z: -1
     64:
-      ID: 98
-      META: 0
+      BLOCK: "STONE_BRICKS"
       X: -1
       "Y": 1
       Z: 1

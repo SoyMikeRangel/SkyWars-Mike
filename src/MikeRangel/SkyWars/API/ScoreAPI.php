@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\API;
 use MikeRangel\SkyWars\{SkyWars};
-use pocketmine\{Player, Server};
+use pocketmine\{player\Player, Server};
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\network\mcpe\protocol\{RemoveObjectivePacket,SetDisplayObjectivePacket,SetScorePacket,types\ScorePacketEntry};
 

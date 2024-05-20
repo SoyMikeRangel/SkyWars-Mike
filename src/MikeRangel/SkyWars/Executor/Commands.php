@@ -7,14 +7,14 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Executor;
 use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Form\FormManager, Entity\EntityManager, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, Player, utils\TextFormat as Color};
-use pocketmine\command\{PluginCommand, CommandSender};
+use pocketmine\{Server, player\Player, utils\TextFormat as Color};
+use pocketmine\command\{CommandSender, Command};
 
-class Commands extends PluginCommand {
+class Commands extends Command {
 
     public function __construct(SkyWars $plugin) {
-        parent::__construct('sw', $plugin);
-        $this->setDescription('SkyWars 1.0 by Mike Rangel.');
+        parent::__construct("sw", "SkyWars 1.0 by Mike Rangel.", \null, ["sw"]);
+        $this->setPermission("sw.cmd");
     }
 
     public function execute(CommandSender $player, $label, array $args) {
@@ -38,53 +38,45 @@ class Commands extends PluginCommand {
                 }
             break;
             case 'create':
-                if ($player->isOp()) {
-                    if (isset($args[1], $args[2], $args[3])) {
-                        if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[1])) {
-                            if (Arena::ArenaExiting($args[3])) {
-                                Arena::addArena($player, $args[1], $args[2], $args[3]);
-                            } else {
-                                $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This arena already exists.');
-                            }
+                if (isset($args[1], $args[2], $args[3])) {
+                    if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[1])) {
+                        if (Arena::ArenaExiting($args[3])) {
+                            Arena::addArena($player, $args[1], $args[2], $args[3]);
                         } else {
-                            $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This world does not exist.');
+                            $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This arena already exists.');
                         }
                     } else {
-                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw create <arena> <maxslots> <id>');
+                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This world does not exist.');
                     }
                 } else {
-                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'You do not have permissions to run this command.');
+                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw create <arena> <maxslots> <id>');
                 }
             break;
             case 'npc':
-                if ($player->isOp()) {
-                    if (!empty($args[1])) {
-                        switch ($args[1]) {
-                            case 'game':
-                                $entity = new EntityManager();
-                                $entity->setGame($player);
-                                $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'The npc of game has been placed successfully.');
-                            break;
-                            case 'stats':
-                                $entity = new EntityManager();
-                                $entity->setStats($player);
-                                $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'Tops have been placed successfully.');
-                            break;
-                            case 'remove':
-                                foreach ($player->getLevel()->getEntities() as $entity) {
-                                    if ($entity instanceof EntityHuman) {
-                                        $entity->kill();
-                                    } else if ($entity instanceof EntityStats) {
-                                        $entity->kill();
-                                    }
+                if (!empty($args[1])) {
+                    switch ($args[1]) {
+                        case 'game':
+                            $entity = new EntityManager();
+                            $entity->setGame($player);
+                            $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'The npc of game has been placed successfully.');
+                        break;
+                        case 'stats':
+                            $entity = new EntityManager();
+                            $entity->setStats($player);
+                            $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'Tops have been placed successfully.');
+                        break;
+                        case 'remove':
+                            foreach ($player->getWorld()()->getEntities() as $entity) {
+                                if ($entity instanceof EntityHuman) {
+                                    $entity->kill();
+                                } else if ($entity instanceof EntityStats) {
+                                    $entity->kill();
                                 }
-                            break;
-                        }
-                    } else {
-                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw npc <stats|game>');
+                            }
+                        break;
                     }
                 } else {
-                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'You do not have permissions to run this command.');
+                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw npc <stats|game>');
                 }
             break;
             case 'settings':
@@ -92,7 +84,7 @@ class Commands extends PluginCommand {
             break;
             case 'leave':
                 foreach (Arena::getArenas() as $arena) {
-                    if ($player->getLevel()->getFolderName() == Arena::getName($arena)) {
+                    if ($player->getWorld()()->getFolderName() == Arena::getName($arena)) {
                         $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();

@@ -2,188 +2,157 @@
 Desert:
   BLOCKS:
     1:
-      ID: 5
-      META: 2
+      BLOCK: "BIRCH_PLANKS"
       X: 0
       "Y": 0
       Z: 0
     2:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 1
       "Y": 0
       Z: 0
     3:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 0
       "Y": 0
       Z: 1
     4:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: -1
       "Y": 0
       Z: 0
     5:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 0
       "Y": 0
       Z: -1
     6:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: 1
       "Y": 0
       Z: -1
     7:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: 1
       "Y": 0
       Z: 1
     8:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: -1
       "Y": 0
       Z: 1
     9:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: -1
       "Y": 0
       Z: -1
     10:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: -1
       "Y": 1
       Z: -1
     11:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 1
       "Y": 1
       Z: -1
     12:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 1
       "Y": 1
       Z: 1
     13:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: -1
       "Y": 1
       Z: 1
     14:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 1
       Z: 1
     15:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 2
       Z: 1
     16:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 1
       Z: 0
     17:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: -1
       "Y": 2
       Z: 0
     18:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 1
       Z: -1
     19:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 0
       "Y": 2
       Z: -1
     20:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 1
       Z: 0
     21:
-      ID: 85
-      META: 2
+      BLOCK: "OAK_FENCE"
       X: 1
       "Y": 2
       Z: 0
     22:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: 0
       "Y": 3
       Z: -1
     23:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: -1
       "Y": 3
       Z: 0
     24:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: 0
       "Y": 3
       Z: 1
     25:
-      ID: 24
-      META: 1
+      BLOCK: "SANDSTONE"
       X: 1
       "Y": 3
       Z: 0
     27:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 1
       "Y": 3
       Z: 1
     28:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: -1
       "Y": 3
       Z: 1
     29:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 1
       "Y": 3
       Z: -1
     30:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: -1
       "Y": 3
       Z: -1
     31:
-      ID: 24
-      META: 0
+      BLOCK: "SANDSTONE"
       X: 0
       "Y": 3
       Z: 0
     32:
-      ID: 44
-      META: 1
+      BLOCK: "SANDSTONE_SLAB"
       X: 0
       "Y": 4
       Z: 0

@@ -2,140 +2,117 @@
 Spawner:
   BLOCKS:
     1:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: 0
       "Y": 0
       Z: 0
     2:
-      ID: 139
-      META: 1
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: -1
     3:
-      ID: 139
-      META: 1
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 0
       Z: 0
     4:
-      ID: 139
-      META: 1
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: 1
     5:
-      ID: 139
-      META: 1
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 0
       Z: 0
     6:
-      ID: 182
-      META: 5
+      BLOCK: "NETHER_BRICK_STAIRS"
       X: 0
       "Y": 1
       Z: -1
     7:
-      ID: 182
-      META: 5
+      BLOCK: "NETHER_BRICK_STAIRS"
       X: -1
       "Y": 1
       Z: 0
     8:
-      ID: 182
-      META: 5
+      BLOCK: "NETHER_BRICK_STAIRS"
       X: 0
       "Y": 1
       Z: 1
     9:
-      ID: 182
-      META: 5
+      BLOCK: "NETHER_BRICK_STAIRS"
       X: 1
       "Y": 1
       Z: 0
     10:
-      ID: 52
-      META: 0
+      BLOCK: "MOB_SPAWNER"
       X: -1
       "Y": 2
       Z: 0
     11:
-      ID: 52
-      META: 0
+      BLOCK: "MOB_SPAWNER"
       X: 0
       "Y": 2
       Z: -1
     12:
-      ID: 52
-      META: 0
+      BLOCK: "MOB_SPAWNER"
       X: 1
       "Y": 2
       Z: 0
     13:
-      ID: 52
-      META: 0
+      BLOCK: "MOB_SPAWNER"
       X: 0
       "Y": 2
       Z: 1
     14:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: 1
     15:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 3
       Z: 0
     16:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: -1
     17:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 3
       Z: 0
     18:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: 0
       "Y": 4
       Z: -1
     19:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: -1
       "Y": 4
       Z: 0
     20:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: 0
       "Y": 4
       Z: 1
     21:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: 1
       "Y": 4
       Z: 0
     23:
-      ID: 182
-      META: 5
+      BLOCK: "NETHER_BRICK_STAIRS"
       X: 0
       "Y": 4
       Z: 0
     24:
-      ID: 4
-      META: 0
+      BLOCK: "COBBLESTONE"
       X: 0
       "Y": 5
       Z: 0

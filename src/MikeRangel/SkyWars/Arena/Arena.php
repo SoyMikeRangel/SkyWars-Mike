@@ -7,16 +7,16 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Arena;
 use MikeRangel\SkyWars\{SkyWars, PluginUtils};
-use pocketmine\{Server, Player, utils\Config, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, player\GameMode, utils\Config, utils\TextFormat as Color};
 
 class Arena {
 
     public static function getPlayers(string $arena) {
         $players = [];
-		$expectedArena = Server::getInstance()->getLevelByName(self::getName($arena));
+		$expectedArena = Server::getInstance()->getWorldManager()->getWorldByName(self::getName($arena));
 		if($expectedArena != null){
             foreach ($expectedArena->getPlayers() as $player) {
-            	if ($player->getGamemode() == Player::SURVIVAL || $player->getGamemode() == Player::ADVENTURE) {
+                if ($player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE()) {
                 	$players[] = $player->getName();
             	}
         	}
@@ -26,10 +26,10 @@ class Arena {
 
     public static function getSpecters(string $arena) {
         $specters = [];
-		$expectedArena = Server::getInstance()->getLevelByName(self::getName($arena));
+		$expectedArena = Server::getInstance()->getWorldManager()->getWorldByName(self::getName($arena));
 		if($expectedArena != null){
         	foreach ($expectedArena->getPlayers() as $player) {
-            	if ($player->getGamemode() == Player::SPECTATOR) {
+            	if ($player->getGamemode() === GameMode::SPECTATOR()) {
                 	$specters[] = $player->getName();
             	}
         	}
@@ -45,27 +45,28 @@ class Arena {
         }
     }
 
-    public static function getArenas() : array {
+    public static function getArenas(): array {
         $arenas = [];
-		if ($handle = opendir(SkyWars::getInstance()->getDataFolder() . 'Arenas/')) {
-			while (false !== ($entry = readdir($handle))) {
-				if ($entry !== '.' && $entry !== '..') {
-					$name = str_replace('.yml', '', $entry);
+        $path = SkyWars::getInstance()->getDataFolder() . 'Arenas/';
+        if ($handle = opendir($path)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry !== '.' && $entry !== '..') {
+                    $name = str_replace('.yml', '', $entry);
                     $arenas[] = $name;
-				}
-			}
-			closedir($handle);
-		}
-		return $arenas;
-	}
+                }
+            }
+            closedir($handle);
+        }
+        return $arenas;
+    }
 
     public static function addArena(Player $player, string $arena, string $slots, string $id) {
-        Server::getInstance()->loadLevel($arena);
-        Server::getInstance()->getLevelByName($arena)->loadChunk(Server::getInstance()->getLevelByName($arena)->getSafeSpawn()->getFloorX(), Server::getInstance()->getLevelByName($arena)->getSafeSpawn()->getFloorZ());
-        $player->teleport(Server::getInstance()->getLevelByName($arena)->getSafeSpawn(), 0, 0);
-        $player->setGamemode(1);
-        SkyWars::$data['id'] = $id;
+        Server::getInstance()->getWorldManager()->loadWorld($arena);
+        Server::getInstance()->getWorldManager()->getWorldByName($arena)->loadChunk(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getSafeSpawn()->getFloorX(), Server::getInstance()->getWorldManager()->getWorldByName($arena)->getSafeSpawn()->getFloorZ());
+        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName($arena)->getSafeSpawn(), 0, 0);
+        $player->setGamemode(GameMode::creative());
         SkyWars::$data['configurator'][] = $player->getName();
+        SkyWars::$data['id'] = $id;
         SkyWars::$data['vote'][$arena]['op'] = [];
         SkyWars::$data['vote'][$arena]['normal'] = [];
         SkyWars::$data['kills'][$arena] = ['Steve' => 0, 'Enderman' => 0];
@@ -81,16 +82,17 @@ class Arena {
             'endtime' => 16
         ]);
         $config->save();
-        $player->setGamemode(1);
+        $player->setGamemode(GameMode::creative());
         $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'Arena created successfully.' . "\n" . Color::GREEN . 'You are now in configuration mode.');
     }
 
     public static function setLobbyWaiting(Player $player) {
         $config = SkyWars::getConfigs('Arenas/SW-' . SkyWars::$data['id']);
+        $position = $player->getPosition();
         $config->set('lobby', [
-            $player->getX(),
-            $player->getY(),
-            $player->getZ()
+            $position->getX(),
+            $position->getY(),
+            $position->getZ()
         ]);
         $config->save();
         $player->sendMessage(Color::GREEN . 'Lobby registered with id: ' . SkyWars::$data['id']);
@@ -98,10 +100,11 @@ class Arena {
 
     public static function setLobbySpecters(Player $player) {
         $config = SkyWars::getConfigs('Arenas/SW-' . SkyWars::$data['id']);
+        $position = $player->getPosition();
         $config->set('lobbyspecters', [
-            $player->getX(),
-            $player->getY(),
-            $player->getZ()
+            $position->getX(),
+            $position->getY(),
+            $position->getZ()
         ]);
         $config->save();
         $player->sendMessage(Color::GREEN . 'Spectator lobby successfully registered to id: ' . SkyWars::$data['id']);
@@ -109,10 +112,11 @@ class Arena {
 
     public static function setLobbyWin(Player $player) {
         $config = SkyWars::getConfigs('Arenas/SW-' . SkyWars::$data['id']);
+        $position = $player->getPosition();
         $config->set('lobbywin', [
-            $player->getX(),
-            $player->getY(),
-            $player->getZ()
+            $position->getX(),
+            $position->getY(),
+            $position->getZ()
         ]);
         $config->save();
         $player->sendMessage(Color::GREEN . 'Win lobby successfully registered to id: ' . SkyWars::$data['id']);
@@ -120,10 +124,11 @@ class Arena {
 
     public static function setSpawns(Player $player, string $value) {
         $config = SkyWars::getConfigs('Arenas/SW-' . SkyWars::$data['id']);
+        $position = $player->getPosition();
         $config->set('slot-' . $value, [
-            $player->getX(),
-            $player->getY(),
-            $player->getZ()
+            $position->getX(),
+            $position->getY(),
+            $position->getZ()
         ]);
         $config->save();
         $player->sendMessage(Color::GREEN . 'Spawn-' . $value . ' registrado con exito en id: ' . SkyWars::$data['id']);

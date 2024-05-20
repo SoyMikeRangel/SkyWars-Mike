@@ -4,7 +4,7 @@ namespace MikeRangel\SkyWars\Form;
 
 use Closure;
 use pocketmine\form\FormValidationException;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use MikeRangel\SkyWars\Form\elements\{Button};
 use function array_map;
 use function array_merge;

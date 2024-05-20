@@ -7,10 +7,10 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars;
 use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Tasks\NewGame, Tasks\ArenaID};
-use pocketmine\{Server, Player, item\Item, tile\Tile, tile\Chest, inventory\ChestInventory, entity\Effect, entity\EffectInstance, math\Vector3, entity\Entity, block\Block, utils\Color, utils\TextFormat};
-use pocketmine\network\mcpe\protocol\{AddActorPacket, PlaySoundPacket, LevelSoundEventPacket, StopSoundPacket};
+use pocketmine\{Server, player\Player, player\GameMode, item\Item, tile\Tile, tile\Chest, inventory\ChestInventory, entity\Effect, entity\EffectInstance, math\Vector3, entity\Entity, block\Block, block\VanillaBlocks, utils\Color, utils\TextFormat};
+use pocketmine\network\mcpe\protocol\{AddActorPacket, ActorEventPacket, PlaySoundPacket, LevelSoundEventPacket, StopSoundPacket};
 use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance};
-use pocketmine\level\sound\{EndermanTeleportSound};
+use pocketmine\world\sound\{EndermanTeleportSound};
 
 class PluginUtils {
 
@@ -43,14 +43,15 @@ class PluginUtils {
     }
 
     public static function playSound(Player $player, string $sound, float $volume = 0, float $pitch = 0) {
+        $position = $player->getPosition();
         $pk = new PlaySoundPacket();
         $pk->soundName = $sound;
-        $pk->x = (int)$player->x;
-        $pk->y = (int)$player->y;
-        $pk->z = (int)$player->z;
+        $pk->x = (int)$position->getX();
+        $pk->y = (int)$position->getY();
+        $pk->z = (int)$position->getZ();
         $pk->volume = $volume;
         $pk->pitch = $pitch;
-        $player->dataPacket($pk);
+        $player->getNetworkSession()->sendDataPacket($pk);
     }
 
     public static function stopSound(Player $player, string $sound, $all = true) {
@@ -61,17 +62,19 @@ class PluginUtils {
     }
 
     public static function getCage(Player $player, string $value) {
+        $world = $player->getWorld();
+        $pos = $player->getPosition();
+    
         if ($value == 'Default') {
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 1, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 3, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() + 1, $player->getY() + 2, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 2, $player->getZ() + 1), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() - 1, $player->getY() + 2, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 2, $player->getZ() - 1), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() + 1, $player->getY() - 0, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 0, $player->getZ() + 1), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() - 1, $player->getY() - 0, $player->getZ()), Block::get(20), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 0, $player->getZ() - 1), Block::get(20), false, true);
+            $positions = [
+                [0, -1, 0], [0, 3, 0], [1, 2, 0], [0, 2, 1],
+                [-1, 2, 0], [0, 2, -1], [1, 0, 0], [0, 0, 1],
+                [-1, 0, 0], [0, 0, -1]
+            ];
+            foreach ($positions as $offset) {
+                $world->setBlock($pos->add($offset[0], $offset[1], $offset[2]), VanillaBlocks::GLASS(), false, true);
+            }
+
         } else {
             $config = SkyWars::getConfigs('Cages/' . $value);
             $array = $config->get($value, []);
@@ -80,7 +83,7 @@ class PluginUtils {
                 foreach ($blocks as $data => $block) {
                     if ($block['X'] == 0 && $block['Y'] == 1 && $block['Z'] == 0) continue;
                     if ($block['X'] == 0 && $block['Y'] == 2 && $block['Z'] == 0) continue;
-                    $player->getLevel()->setBlock($player->getPosition()->add(intval($block['X']), intval($block['Y'])-1, intval($block['Z'])), Block::get($block['ID'], $block['META']), false, false);
+                    $player->getWorld()->setBlock($player->getPosition()->add(intval($block['X']), intval($block['Y'])-1, intval($block['Z'])), VanillaBlocks::{$block['BLOCK']}(), false, false);
                 }
             }
         }
@@ -88,16 +91,16 @@ class PluginUtils {
 
     public static function unsetCage(Player $player, string $value) {
         if ($value == 'Default') {
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 1, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 3, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() + 1, $player->getY() + 2, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 2, $player->getZ() + 1), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() - 1, $player->getY() + 2, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() + 2, $player->getZ() - 1), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() + 1, $player->getY() - 0, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 0, $player->getZ() + 1), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX() - 1, $player->getY() - 0, $player->getZ()), Block::get(0), false, true);
-            $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 0, $player->getZ() - 1), Block::get(0), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() - 1, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 3, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX() + 1, $player->getPosition()->getY() + 2, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 2, $player->getPosition()->getZ() + 1), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX() - 1, $player->getPosition()->getY() + 2, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() + 2, $player->getPosition()->getZ() - 1), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX() + 1, $player->getPosition()->getY() - 0, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() - 0, $player->getPosition()->getZ() + 1), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX() - 1, $player->getPosition()->getY() - 0, $player->getPosition()->getZ()), VanillaBlocks::AIR(), false, true);
+            $player->getWorld()->setBlock(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY() - 0, $player->getPosition()->getZ() - 1), VanillaBlocks::AIR(), false, true);
         } else {
             $config = SkyWars::getConfigs('Cages/' . $value);
             $array = $config->get($value, []);
@@ -106,7 +109,7 @@ class PluginUtils {
                 foreach ($blocks as $data => $block) {
                     if ($block['X'] == 0 && $block['Y'] == 1 && $block['Z'] == 0) continue;
                     if ($block['X'] == 0 && $block['Y'] == 2 && $block['Z'] == 0) continue;
-                    $player->getLevel()->setBlock($player->getPosition()->add(intval($block['X']), intval($block['Y'])-1, intval($block['Z'])), Block::get(0), false, false);
+                    $player->getWorld()->setBlock($player->getPosition()->add(intval($block['X']), intval($block['Y'])-1, intval($block['Z'])), VanillaBlocks::AIR(), false, false);
                 }
             }
         }
@@ -135,9 +138,9 @@ class PluginUtils {
                 } else {
                     if (!isset(SkyWars::$data['vote'][$arena]['op'][$player->getName()])) {
                         SkyWars::$data['vote'][$arena]['op'][$player->getName()] = $player->getName();
-                        foreach (Server::getInstance()->getLevelByName($arena)->getPlayers() as $players) {
+                        foreach (Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers() as $players) {
                             $players->sendMessage(TextFormat::GOLD . $player->getName() . ' You voted for chests OP.');
-                            $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
+                            $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
                         }
                     } else {
                         unset(SkyWars::$data['vote'][$arena]['op'][$player->getName()]);
@@ -152,9 +155,9 @@ class PluginUtils {
                 } else {
                     if (!isset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()])) {
                         SkyWars::$data['vote'][$arena]['normal'][$player->getName()] = $player->getName();
-                        foreach (Server::getInstance()->getLevelByName($arena)->getPlayers() as $players) {
+                        foreach (Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers() as $players) {
                             $players->sendMessage(TextFormat::GOLD . $player->getName() . ' You voted for chests Basic.');
-                            $player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
+                            $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
                         }
                     } else {
                         unset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()]);
@@ -175,7 +178,7 @@ class PluginUtils {
                     $kills = SkyWars::getConfigs('kills');
                     $kills->set($damager->getName(), $kills->get($damager->getName()) + 1);
                     $kills->save();
-                    foreach ($damager->getLevel()->getPlayers() as $players) {
+                    foreach ($damager->getWorld()->getPlayers() as $players) {
                         $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' ' . $cause . ' ' . TextFormat::GOLD . $damager->getName() . '.');
                         $remain = (count(Arena::getPlayers($arena)) - 1);
                         if ($remain > 1) {
@@ -193,7 +196,7 @@ class PluginUtils {
                     $coins->save();
                     $damager->sendMessage(TextFormat::LIGHT_PURPLE . '+2 Coins.');
                 } else {
-                    foreach ($player->getLevel()->getPlayers() as $players)  {
+                    foreach ($player->getWorld()->getPlayers() as $players)  {
                         $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' ' . $cause . '.');
                         $remain = (count(Arena::getPlayers($arena)) - 1);
                         if ($remain > 1) {
@@ -202,10 +205,10 @@ class PluginUtils {
                     }
                 }
                 foreach ($player->getDrops() as $drops) {
-                    $player->getLevel()->dropItem($player, $drops);
+                    $player->getWorld()->dropItem($player, $drops);
                 }
-                self::addStrike(Server::getInstance()->getLevelByName($player->getLevel()->getFolderName())->getPlayers(), $player);
-                $player->removeAllEffects();
+                self::addStrike(Server::getInstance()->getWorldManager()->getWorldByName($player->getWorld()->getFolderName())->getPlayers(), $player);
+                $player->getEffects()->clear();
                 $player->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 20, 3));
                 switch (rand(1, 2)) {
                     case 1:
@@ -218,7 +221,7 @@ class PluginUtils {
                 $player->teleport(new Vector3($lobby[0], $lobby[1], $lobby[2]));
                 $player->setGamemode(3);
                 $player->setHealth(20);
-                $player->setFood(20);
+                $player->getHungerManager()->setFood(20);
                 $player->getInventory()->clearAll();
                 $player->getArmorInventory()->clearAll();
                 $player->sendMessage(TextFormat::BOLD . TextFormat::GREEN . '» ' . TextFormat::RESET . TextFormat::YELLOW . 'The search for a new game will begin, cancel the wait using the remaining item of the players to continue watching.');
@@ -239,7 +242,7 @@ class PluginUtils {
                    
     public static function joinSolo(Player $player, int $id) {
         if ($player instanceof Player) {
-            $world = Server::getInstance()->getLevelByName(Arena::getName('SW-' . $id));
+            $world = Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName('SW-' . $id));
             if (Arena::getStatus('SW-' . $id) == 'waiting') {
                 if (count(Arena::getPlayers('SW-' . $id)) < Arena::getSpawns('SW-' . $id)) {
                     SkyWars::$data['skins'][$player->getName()] = $player->getSkin();
@@ -250,23 +253,23 @@ class PluginUtils {
                     $player->sendMessage(TextFormat::GREEN . TextFormat::BOLD . '» ' . TextFormat::RESET . TextFormat::GREEN . 'An available game has been found: ' . 'SW-' . $id);
                     $config = SkyWars::getConfigs('Arenas/' . 'SW-' . $id);
                     $lobby = $config->get('lobby');
-                    $player->teleport(Server::getInstance()->getLevelByName(Arena::getName('SW-' . $id))->getSpawnLocation());
+                    $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName('SW-' . $id))->getSpawnLocation());
                     $player->teleport(new Vector3($lobby[0], $lobby[1], $lobby[2]));
                     $player->setAllowFlight(false);
                     $player->setFlying(false);    
-                    $player->removeAllEffects();
-                    $player->setGamemode(2);
+                    $player->getEffects()->clear();
+                    $player->setGamemode(GameMode::adventure());
                     $player->setHealth(20);
-                    $player->setFood(20);
+                    $player->getHungerManager()->setFood(20);
                     $player->setScale(1);
                     foreach ($world->getPlayers() as $players) {
                         $players_array[] = $players->getName();
                     }
                     $player->sendMessage(TextFormat::GOLD . join(TextFormat::GOLD  . ', ' . TextFormat::GOLD, $players_array) . TextFormat::GOLD . '.');
-                    $player->getLevel()->addSound(new EndermanTeleportSound($player));
+                    $player->getWorld()->addSound($player->getPosition(), new EndermanTeleportSound($player));
                     foreach ($world->getPlayers() as $players) {
                         $players->sendMessage(TextFormat::GREEN . TextFormat::BOLD . '» ' . TextFormat::RESET . TextFormat::DARK_GRAY . $player->getName() . ' ' . 'Joined the game.' . ' ' . TextFormat::DARK_GRAY . '[' . TextFormat::DARK_GRAY . count($world->getPlayers()) . TextFormat::DARK_GRAY . '/' . TextFormat::DARK_GRAY . Arena::getSpawns('SW-' . $id) . TextFormat::DARK_GRAY . ']');
-                        $players->getLevel()->addSound(new EndermanTeleportSound($players));
+                        $players->getWorld()->addSound($players->getPosition(), new EndermanTeleportSound($players));
                     }
                 }
             }
@@ -274,7 +277,7 @@ class PluginUtils {
     }
 
     public static function setZip(string $arena) {
-		$level = Server::getInstance()->getLevelByName($arena);
+		$level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
 		if ($level !== null) {
 			$level->save(true);
 			$levelPath = SkyWars::getInstance()->getServer()->getDataPath() . 'worlds' . DIRECTORY_SEPARATOR . $arena;
@@ -447,7 +450,7 @@ class PluginUtils {
     }
     
     public static function chestOP(string $arena) {
-        $level = Server::getInstance()->getLevelByName($arena);
+        $level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
         foreach ($level->getTiles() as $tiles) {
             if ($tiles instanceof Chest) {
                 $tiles->getInventory()->clearAll();
@@ -499,18 +502,26 @@ class PluginUtils {
     }
 
     public static function chestDefault(string $arena) {
-        $level = Server::getInstance()->getLevelByName($arena);
-        foreach ($level->getTiles() as $tiles) {
-            if ($tiles instanceof Chest) {
-                $tiles->getInventory()->clearAll();
-                if ($tiles->getInventory() instanceof ChestInventory) {
-                    for ($i = 0; $i <= 26; $i++) {
-                        $random = rand(1, 3);
-                        if ($random == 1) {
-                            $contents = self::getContents();
-                            $contentstwo = self::getContentsTwo()[$contents];
-                            $item = Item::get($contentstwo[0], $contentstwo[1], $contentstwo[2]);
-                            $tiles->getInventory()->setItem($i, $item);
+        $level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
+        
+        if (!$level instanceof World) {
+            Server::getInstance()->getLogger()->error("The world '$arena' could not be found.");
+            return;
+        }
+    
+        foreach ($level->getLoadedChunks() as $chunk) {
+            foreach ($chunk->getTiles() as $tile) {
+                if ($tile instanceof Chest) {
+                    $tile->getInventory()->clearAll();
+                    if ($tile->getInventory() instanceof ChestInventory) {
+                        for ($i = 0; $i <= 26; $i++) {
+                            $random = rand(1, 3);
+                            if ($random == 1) {
+                                $contents = self::getContents();
+                                $contentstwo = self::getContentsTwo()[$contents];
+                                $item = Item::get($contentstwo[0], $contentstwo[1], $contentstwo[2]);
+                                $tile->getInventory()->setItem($i, $item);
+                            }
                         }
                     }
                 }

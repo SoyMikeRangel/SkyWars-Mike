@@ -2,494 +2,412 @@
 Tree:
   BLOCKS:
     0:
-      ID: 241
-      META: 5
+      BLOCK: "CHISELED_QUARTZ_BLOCK"
       X: 0
       "Y": 0
       Z: 0
     1:
-      ID: 2
-      META: 0
+      BLOCK: "GRASS"
       X: 1
       "Y": 0
       Z: 0
     2:
-      ID: 2
-      META: 0
+      BLOCK: "GRASS"
       X: 0
       "Y": 0
       Z: -1
     3:
-      ID: 2
-      META: 0
+      BLOCK: "GRASS"
       X: -1
       "Y": 0
       Z: 0
     4:
-      ID: 2
-      META: 0
+      BLOCK: "GRASS"
       X: 0
       "Y": 0
       Z: 1
     5:
-      ID: 18
-      META: 3
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 0
       Z: 1
     6:
-      ID: 18
-      META: 3
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 0
       Z: 1
     7:
-      ID: 18
-      META: 3
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 0
       Z: -1
     8:
-      ID: 18
-      META: 3
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 0
       Z: -1
     10:
-      ID: 241
-      META: 13
+      BLOCK: "QUARTZ_BLOCK"
       X: 0
       "Y": 1
       Z: -1
     11:
-      ID: 241
-      META: 5
+      BLOCK: "CHISELED_QUARTZ_BLOCK"
       X: -1
       "Y": 1
       Z: 0
     12:
-      ID: 241
-      META: 13
+      BLOCK: "QUARTZ_BLOCK"
       X: 0
       "Y": 1
       Z: 1
     13:
-      ID: 241
-      META: 5
+      BLOCK: "CHISELED_QUARTZ_BLOCK"
       X: 1
       "Y": 1
       Z: 0
     14:
-      ID: 241
-      META: 5
+      BLOCK: "CHISELED_QUARTZ_BLOCK"
       X: 0
       "Y": 2
       Z: -1
     15:
-      ID: 241
-      META: 5
+      BLOCK: "CHISELED_QUARTZ_BLOCK"
       X: 0
       "Y": 2
       Z: 1
     16:
-      ID: 241
-      META: 13
+      BLOCK: "QUARTZ_BLOCK"
       X: -1
       "Y": 2
       Z: 0
     17:
-      ID: 241
-      META: 13
+      BLOCK: "QUARTZ_BLOCK"
       X: 1
       "Y": 2
       Z: 0
     19:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: -1
       "Y": 2
       Z: -1
     20:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: -1
       "Y": 3
       Z: 0
     22:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: -1
       "Y": 2
       Z: 1
     23:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: 0
       "Y": 3
       Z: 1
     25:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: 1
       "Y": 2
       Z: 1
     26:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: 1
       "Y": 3
       Z: 0
     28:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: 1
       "Y": 2
       Z: -1
     29:
-      ID: 17
-      META: 0
+      BLOCK: "OAK_LOG"
       X: 0
       "Y": 3
       Z: -1
     30:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 3
       Z: -1
     31:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 4
       Z: 0
     38:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 3
       Z: -1
     39:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 4
       Z: 0
     43:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 0
       "Y": 4
       Z: 1
     51:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 3
       Z: 1
     52:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 3
       Z: 1
     54:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 0
       "Y": 5
       Z: 0
     55:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: -2
     57:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 2
       Z: -2
     58:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 2
       Z: -2
     59:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -2
       "Y": 2
       Z: -1
     60:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -2
       "Y": 3
       Z: 0
     61:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -2
       "Y": 2
       Z: 1
     62:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 2
       Z: 2
     63:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: 2
     64:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 2
       Z: 2
     65:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 2
       "Y": 2
       Z: 1
     66:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 2
       "Y": 3
       Z: 0
     67:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 2
       "Y": 2
       Z: -1
     68:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 1
       "Y": 1
       Z: -1
     69:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 1
       "Y": 1
       Z: 1
     70:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -1
       "Y": 1
       Z: -1
     71:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -1
       "Y": 1
       Z: 1
     72:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -2
       "Y": 0
       Z: 0
     73:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: -2
     74:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 2
       "Y": 0
       Z: 0
     75:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: 2
     77:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_DOOR"
       X: -1
       "Y": 4
       Z: -1
     78:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_DOOR"
       X: -1
       "Y": 4
       Z: 1
     79:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_DOOR"
       X: 1
       "Y": 4
       Z: 1
     80:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_DOOR"
       X: 1
       "Y": 4
       Z: -1
     81:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 5
       Z: -1
     82:
-      ID: 65
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 5
       Z: 0
     83:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 1
       "Y": 5
       Z: 0
     84:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 0
       "Y": 5
       Z: -1
     85:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -1
       "Y": 5
       Z: 0
     86:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 0
       "Y": 5
       Z: 1
     87:
-      ID: 96
-      META: 0
+      BLOCK: "IRON_DOOR"
       X: 0
       "Y": 6
       Z: 0
     88:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -2
       "Y": 0
       Z: -1
     89:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -1
       "Y": 0
       Z: -2
     90:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -2
       "Y": 0
       Z: 1
     91:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: -1
       "Y": 0
       Z: 2
     92:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 1
       "Y": 0
       Z: 2
     93:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 2
       "Y": 0
       Z: 1
     94:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 2
       "Y": 0
       Z: -1
     95:
-      ID: 85
-      META: 0
+      BLOCK: "NETHER_BRICK_FENCE"
       X: 1
       "Y": 0
       Z: -2
     96:
-      ID: 89
-      META: 0
+      BLOCK: "GLOWSTONE"
       X: 0
       "Y": 4
       Z: 0
     99:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 0
       "Y": 4
       Z: -1
     100:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 2
       "Y": 1
       Z: 1
     102:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 1
       Z: 2
     103:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 2
       "Y": 1
       Z: -1
     106:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: 1
       "Y": 1
       Z: -2
     107:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 1
       Z: -2
     108:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -2
       "Y": 1
       Z: -1
     109:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -2
       "Y": 1
       Z: 1
     110:
-      ID: 18
-      META: 0
+      BLOCK: "OAK_LEAVES"
       X: -1
       "Y": 1
       Z: 2

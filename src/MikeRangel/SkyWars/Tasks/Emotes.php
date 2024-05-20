@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Tasks;
 use MikeRangel\SkyWars\{SkyWars, PluginUtils};
-use pocketmine\{Server, Player, entity\Skin, scheduler\Task, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, entity\Skin, scheduler\Task, utils\TextFormat as Color};
 
 class Emotes extends Task {
     public $time = 3;
@@ -19,7 +19,7 @@ class Emotes extends Task {
         $this->emote = $emote;
     }
 
-    public function onRun(int $currentTick) : void {
+    public function onRun() : void {
         $player = $this->player;
         if (in_array($player->getName(), SkyWars::$data['emotes'])) {
             $this->time--;

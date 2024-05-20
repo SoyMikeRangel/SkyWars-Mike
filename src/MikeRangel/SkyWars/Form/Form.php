@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace MikeRangel\SkyWars\Form;
 
 use Closure;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\Utils;
 use function array_merge;
 

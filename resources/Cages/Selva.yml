@@ -2,560 +2,488 @@
 Selva:
   BLOCKS:
     0:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 0
       "Y": 0
       Z: 0
     1:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: 1
     2:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 0
       Z: 0
     3:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 0
       Z: -1
     4:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 0
       Z: 0
     5:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 0
       "Y": 1
       Z: -1
     6:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 1
       "Y": 1
       Z: 0
     7:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 0
       "Y": 1
       Z: 1
     8:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: -1
       "Y": 1
       Z: 0
     9:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: -1
       "Y": 1
       Z: 1
     10:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: -1
       "Y": 1
       Z: -1
     11:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 1
       "Y": 1
       Z: -1
     12:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 1
       "Y": 1
       Z: 1
     13:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 2
       Z: -1
     14:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 2
       Z: -1
     15:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 2
       Z: 1
     16:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 2
       Z: 1
     17:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: -1
       "Y": 3
       Z: -1
     18:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 1
       "Y": 3
       Z: -1
     19:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 1
       "Y": 3
       Z: 1
     20:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: -1
       "Y": 3
       Z: 1
     21:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 1
       "Y": 3
       Z: 0
     22:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: 1
     23:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: 0
       "Y": 3
       Z: -1
     24:
-      ID: 139
+      BLOCK: "COBBLESTONE_WALL"
       META: 1
       X: 1
       "Y": 4
       Z: -1
     25:
-      ID: 139
+      BLOCK: "COBBLESTONE_WALL"
       META: 1
       X: -1
       "Y": 4
       Z: -1
     26:
-      ID: 139
+      BLOCK: "COBBLESTONE_WALL"
       META: 1
       X: -1
       "Y": 4
       Z: 1
     27:
-      ID: 139
+      BLOCK: "COBBLESTONE_WALL"
       META: 1
       X: 1
       "Y": 4
       Z: 1
     28:
-      ID: 44
+      BLOCK: "STONE_SLAB"
       META: 3
       X: 1
       "Y": 5
       Z: -1
     29:
-      ID: 44
+      BLOCK: "STONE_SLAB"
       META: 3
       X: -1
       "Y": 5
       Z: 1
     30:
-      ID: 44
+      BLOCK: "STONE_SLAB"
       META: 3
       X: 1
       "Y": 5
       Z: 1
     31:
-      ID: 44
+      BLOCK: "STONE_SLAB"
       META: 3
       X: -1
       "Y": 5
       Z: -1
     35:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 0
       "Y": 4
       Z: -1
     36:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 0
       "Y": 4
       Z: 1
     37:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: 1
       "Y": 4
       Z: 0
     38:
-      ID: 139
-      META: 0
+      BLOCK: "COBBLESTONE_WALL"
       X: -1
       "Y": 3
       Z: 0
     39:
-      ID: 98
+      BLOCK: "STONE_BRICKS"
       META: 1
       X: -1
       "Y": 4
       Z: 0
     41:
-      ID: 44
-      META: 0
+      BLOCK: "STONE_SLAB"
       X: 0
       "Y": 5
       Z: 0
     42:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 1
       Z: 2
     43:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 3
       Z: 2
     44:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 2
       Z: 2
     45:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 2
       Z: 2
     46:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 1
       Z: 1
     47:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 2
       Z: 1
     48:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 2
       Z: 1
     49:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 3
       Z: 1
     50:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 1
       Z: -1
     51:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 2
       Z: -1
     52:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 3
       Z: -1
     53:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 1
       Z: -2
     54:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 2
       Z: -2
     55:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 2
       Z: -2
     56:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 2
       Z: -2
     57:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -1
       "Y": 3
       Z: -2
     58:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 1
       Z: -2
     59:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     60:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     61:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     62:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     63:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     64:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     65:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     66:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     67:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: -2
     68:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 3
       Z: -2
     69:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 1
       Z: -1
     70:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     71:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     72:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     73:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     74:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     75:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     76:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     77:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     78:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     79:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     80:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: -1
     81:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 3
       Z: -1
     82:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 1
       Z: 1
     83:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     84:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     85:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     86:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     87:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     88:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 2
       Z: 1
     89:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 3
       Z: 1
     90:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 1
       Z: 2
     91:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 2
       Z: 2
     92:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 1
       "Y": 3
       Z: 2
     93:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 0
       "Y": 4
       Z: 2
     94:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 2
       "Y": 4
       Z: 0
     95:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: 0
       "Y": 4
       Z: -2
     96:
-      ID: 106
-      META: 0
+      BLOCK: "VINES"
       X: -2
       "Y": 4
       Z: 0

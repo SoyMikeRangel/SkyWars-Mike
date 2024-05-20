@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Entity;
 use MikeRangel\SkyWars\{SkyWars, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, Player, utils\TextFormat as Color, level\Level, entity\Entity, math\Vector3, entity\Skin};
+use pocketmine\{Server, player\Player, utils\TextFormat as Color, level\Level, entity\Entity, math\Vector3, entity\Skin};
 
 final class EntityManager {
 

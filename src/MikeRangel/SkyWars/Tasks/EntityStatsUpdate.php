@@ -7,12 +7,12 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Tasks;
 use MikeRangel\SkyWars\{SkyWars, Entity\types\EntityStats};
-use pocketmine\{Server, Player, utils\TextFormat as Color, scheduler\Task};
+use pocketmine\{Server, player\Player, utils\TextFormat as Color, scheduler\Task};
 
 class EntityStatsUpdate extends Task {
 
-    public function onRun(int $currenTick) : void {
-        foreach (Server::getInstance()->getDefaultLevel()->getEntities() as $entity) {
+    public function onRun() : void {
+        foreach (Server::getInstance()->getWorldManager()->getDefaultWorld()->getPlayers() as $entity) {
 			if ($entity instanceof EntityStats) {
                 $entity->setNameTag(self::setTops());
                 $entity->setNameTagAlwaysVisible(true);

@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars;
 use MikeRangel\SkyWars\{Arena\Arena, API\ScoreAPI, Executor\Commands, Tasks\EntityStatsUpdate, Tasks\NewMap, Events\GlobalEvents, Tasks\GameScheduler, Tasks\EntityUpdate, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, Player, plugin\PluginBase, entity\Entity, utils\Config, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, world\WorldManager, world\World, nbt\tag\CompoundTag, plugin\PluginBase, entity\Entity, entity\EntityFactory, entity\EntityDataHelper, utils\Config, utils\TextFormat as Color};
 
 class SkyWars extends PluginBase {
     public static $instance;
@@ -106,11 +106,14 @@ class SkyWars extends PluginBase {
     }
     
     public function loadEntitys() : void {
-		$values = [EntityHuman::class, EntityStats::class];
-		foreach ($values as $entitys) {
-			Entity::registerEntity($entitys, true);
-		}
-		unset ($values);
+		$entities = [EntityHuman::class, EntityStats::class];
+		foreach ($entities as $entityClass) {
+            EntityFactory::getInstance()->register($entityClass, function(World $world, CompoundTag $nbt) use ($entityClass): Entity {
+                $location = EntityDataHelper::parseLocation($nbt, $world);
+                $skin = Human::parseSkinNBT($nbt);
+                return new $entityClass($location, $skin, $nbt);
+            }, [$entityClass::getNetworkTypeId()]);
+        }
 	}
 
 	public function loadCommands() : void {

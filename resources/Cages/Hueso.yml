@@ -2,230 +2,192 @@
 Hueso:
   BLOCKS:
     1:
-      ID: 241
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS"
       X: 0
       "Y": 0
       Z: 0
     2:
-      ID: 216
-      META: 0
+      BLOCK: "BONE_BLOCK"
       X: 1
       "Y": 0
       Z: 0
     4:
-      ID: 216
-      META: 0
+      BLOCK: "BONE_BLOCK"
       X: -1
       "Y": 0
       Z: 0
     6:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -1
       "Y": 0
       Z: 1
     7:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 1
       "Y": 0
       Z: 1
     8:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 1
       "Y": 0
       Z: -1
     9:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -1
       "Y": 0
       Z: -1
     10:
-      ID: 44
-      META: 6
+      BLOCK: "SMOOTH_STONE_SLAB"
       X: -1
       "Y": 1
       Z: -1
     11:
-      ID: 44
-      META: 6
+      BLOCK: "SMOOTH_STONE_SLAB"
       X: -1
       "Y": 1
       Z: 1
     12:
-      ID: 44
-      META: 6
+      BLOCK: "SMOOTH_STONE_SLAB"
       X: 1
       "Y": 1
       Z: 1
     13:
-      ID: 44
-      META: 6
+      BLOCK: "SMOOTH_STONE_SLAB"
       X: 1
       "Y": 1
       Z: -1
     14:
-      ID: 241
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS"
       X: 1
       "Y": 1
       Z: 0
     15:
-      ID: 241
-      META: 8
+      BLOCK: "LIGHT_GRAY_STAINED_GLASS"
       X: 0
       "Y": 1
       Z: -1
     16:
-      ID: 241
-      META: 8
+      BLOCK: "LIGHT_GRAY_STAINED_GLASS"
       X: 0
       "Y": 1
       Z: 1
     17:
-      ID: 241
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS"
       X: -1
       "Y": 1
       Z: 0
     18:
-      ID: 241
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS"
       X: 0
       "Y": 2
       Z: 1
     19:
-      ID: 241
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS"
       X: 0
       "Y": 2
       Z: -1
     20:
-      ID: 241
-      META: 8
+      BLOCK: "LIGHT_GRAY_STAINED_GLASS"
       X: 1
       "Y": 2
       Z: 0
     21:
-      ID: 241
-      META: 8
+      BLOCK: "LIGHT_GRAY_STAINED_GLASS"
       X: -1
       "Y": 2
       Z: 0
     22:
-      ID: 35
-      META: 0
+      BLOCK: "WHITE_WOOL"
       X: 0
       "Y": 3
       Z: 1
     24:
-      ID: 35
-      META: 0
+      BLOCK: "WHITE_WOOL"
       X: 0
       "Y": 3
       Z: -1
     27:
-      ID: 35
-      META: 8
+      BLOCK: "LIGHT_GRAY_WOOL"
       X: 0
       "Y": 4
       Z: 0
     28:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -1
       "Y": 3
       Z: 1
     29:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 1
       "Y": 3
       Z: 1
     30:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 1
       "Y": 3
       Z: -1
     31:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -1
       "Y": 3
       Z: -1
     32:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -1
       "Y": 4
       Z: 0
     33:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 0
       "Y": 4
       Z: 1
     34:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 1
       "Y": 4
       Z: 0
     35:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 0
       "Y": 4
       Z: -1
     36:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 0
       "Y": 3
       Z: -2
     37:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: -2
       "Y": 3
       Z: 0
     38:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 0
       "Y": 3
       Z: 2
     39:
-      ID: 160
-      META: 0
+      BLOCK: "WHITE_STAINED_GLASS_PANE"
       X: 2
       "Y": 3
       Z: 0
     40:
-      ID: 35
-      META: 8
+      BLOCK: "LIGHT_GRAY_WOOL"
       X: 1
       "Y": 3
       Z: 0
     41:
-      ID: 35
-      META: 8
+      BLOCK: "LIGHT_GRAY_WOOL"
       X: -1
       "Y": 3
       Z: 0
     42:
-      ID: 35
-      META: 8
+      BLOCK: "LIGHT_GRAY_WOOL"
       X: 0
       "Y": 0
       Z: -1
     43:
-      ID: 35
-      META: 8
+      BLOCK: "LIGHT_GRAY_WOOL"
       X: 0
       "Y": 0
       Z: 1

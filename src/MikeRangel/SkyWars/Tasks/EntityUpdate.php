@@ -7,11 +7,11 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Tasks;
 use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Entity\types\EntityHuman};
-use pocketmine\{Server, Player, utils\TextFormat as Color, entity\Effect, entity\EffectInstance, scheduler\Task};
+use pocketmine\{Server, player\Player, utils\TextFormat as Color, entity\Effect, entity\EffectInstance, scheduler\Task};
 
 class EntityUpdate extends Task {
-    public function onRun(int $currentTick) : void {
-		foreach (Server::getInstance()->getDefaultLevel()->getEntities() as $entity) {
+    public function onRun() : void {
+		foreach (Server::getInstance()->getWorldManager()->getDefaultWorld()->getPlayers() as $entity) {
 			if ($entity instanceof EntityHuman) {
 				$entity->addEffect(new EffectInstance(Effect::getEffect(Effect::FIRE_RESISTANCE), 999));
 				$entity->setNameTag(self::setName());
@@ -32,8 +32,8 @@ class EntityUpdate extends Task {
     public static function getAllPlayers() : int {
     	$players = [];
         foreach (Arena::getArenas() as $arena) {
-        	if (Server::getInstance()->getLevelByName(Arena::getName($arena)) !== null) {
-        	    foreach (Server::getInstance()->getLevelByName(Arena::getName($arena))->getPlayers() as $player) {
+        	if (Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena)) !== null) {
+        	    foreach (Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena))->getPlayers() as $player) {
         	        array_push($players, $player->getName());
         	    }
         	}

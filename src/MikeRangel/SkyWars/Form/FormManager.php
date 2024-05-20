@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Form;
 use MikeRangel\SkyWars\{SkyWars, PluginUtils, Arena\Arena, Tasks\Emotes, Tasks\ArenaID, Form\MenuForm, Form\elements\Button};
-use pocketmine\{Server, Player, item\Item, entity\Effect, math\Vector3, entity\EffectInstance, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, item\Item, entity\Effect, math\Vector3, entity\EffectInstance, utils\TextFormat as Color};
 
 class FormManager {
 

@@ -2,205 +2,176 @@
 Ocean:
   BLOCKS:
     2:
-      ID: 133
-      META: 0
+      BLOCK: "EMERALD_BLOCK"
       X: 0
       "Y": 0
       Z: 0
     4:
-      ID: 241
-      META: 3
+      BLOCK: "LIGHT_BLUE_STAINED_GLASS"
       X: 1
       "Y": 0
       Z: -1
     6:
-      ID: 241
-      META: 3
+      BLOCK: "LIGHT_BLUE_STAINED_GLASS"
       X: 1
       "Y": 0
       Z: 1
     8:
-      ID: 241
-      META: 3
+      BLOCK: "LIGHT_BLUE_STAINED_GLASS"
       X: -1
       "Y": 0
       Z: 1
     10:
-      ID: 241
-      META: 3
+      BLOCK: "LIGHT_BLUE_STAINED_GLASS"
       X: -1
       "Y": 0
       Z: -1
     14:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 1
       Z: 0
     15:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 1
       Z: 1
     16:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: 1
       "Y": 1
       Z: 0
     17:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 1
       Z: -1
     18:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: -1
       "Y": 1
       Z: 0
     19:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 1
       Z: -1
     20:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 2
       Z: -1
     21:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 3
       Z: -1
     22:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 1
       Z: 1
     23:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 2
       Z: 1
     24:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: 1
       "Y": 3
       Z: 1
     25:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 1
       Z: -1
     26:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 2
       Z: -1
     27:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 3
       Z: -1
     28:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 1
       Z: 1
     29:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 2
       Z: 1
     30:
-      ID: 160
-      META: 11
+      BLOCK: "GLASS_PANE"
       X: -1
       "Y": 3
       Z: 1
     48:
-      ID: 182
-      META: 3
+      BLOCK: "BRICK_SLAB"
       X: -1
       "Y": 4
       Z: 0
     49:
-      ID: 182
-      META: 3
+      BLOCK: "BRICK_SLAB"
       X: 0
       "Y": 4
       Z: 1
     50:
-      ID: 182
-      META: 3
+      BLOCK: "BRICK_SLAB"
       X: 0
       "Y": 4
       Z: -1
     51:
-      ID: 171
+      BLOCK: "WOOL"
       META: 11
       X: 1
       "Y": 4
       Z: -1
     52:
-      ID: 171
+      BLOCK: "WOOL"
       META: 11
       X: -1
       "Y": 4
       Z: -1
     53:
-      ID: 171
+      BLOCK: "WOOL"
       META: 11
       X: -1
       "Y": 4
       Z: 1
     54:
-      ID: 171
+      BLOCK: "WOOL"
       META: 11
       X: 1
       "Y": 4
       Z: 1
     56:
-      ID: 182
-      META: 4
+      BLOCK: "STONE_BRICK_SLAB"
       X: 0
       "Y": 5
       Z: -1
     58:
-      ID: 182
-      META: 3
+      BLOCK: "BRICK_SLAB"
       X: 1
       "Y": 4
       Z: 0
     59:
-      ID: 182
-      META: 3
+      BLOCK: "BRICK_SLAB"
       X: 1
       "Y": 4
       Z: 0
     60:
-      ID: 241
-      META: 11
+      BLOCK: "LIGHT_BLUE_STAINED_GLASS"
       X: 0
       "Y": 4
       Z: 0
     61:
-      ID: 171
+      BLOCK: "WOOL"
       META: 11
       X: 0
       "Y": 5
