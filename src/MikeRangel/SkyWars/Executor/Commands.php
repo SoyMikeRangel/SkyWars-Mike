@@ -7,14 +7,14 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Executor;
 use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Form\FormManager, Entity\EntityManager, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, player\Player, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, player\GameMode, permission\DefaultPermissions, utils\TextFormat as Color};
 use pocketmine\command\{CommandSender, Command};
 
 class Commands extends Command {
 
     public function __construct(SkyWars $plugin) {
-        parent::__construct("sw", "SkyWars 1.0 by Mike Rangel.", \null, ["sw"]);
-        $this->setPermission("sw.cmd");
+        parent::__construct("sw", "SkyWars 1.0 by Mike Rangel.", null, ["sw"]);
+        $this->setPermission("skywars.command");
     }
 
     public function execute(CommandSender $player, $label, array $args) {
@@ -36,70 +36,79 @@ class Commands extends Command {
                 foreach ($date as $help) {
                     $player->sendMessage(Color::GREEN . $help);
                 }
-            break;
+                break;
             case 'create':
-                if (isset($args[1], $args[2], $args[3])) {
-                    if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[1])) {
-                        if (Arena::ArenaExiting($args[3])) {
-                            Arena::addArena($player, $args[1], $args[2], $args[3]);
+                if ($player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                    if (isset($args[1], $args[2], $args[3])) {
+                        if (file_exists(Server::getInstance()->getDataPath() . 'worlds/' . $args[1])) {
+                            if (Arena::ArenaExiting($args[3])) {
+                                Arena::addArena($player, $args[1], $args[2], $args[3]);
+                            } else {
+                                $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This arena already exists.');
+                            }
                         } else {
-                            $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This arena already exists.');
+                            $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This world does not exist.');
                         }
                     } else {
-                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'This world does not exist.');
+                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw create <arena> <maxslots> <id>');
                     }
                 } else {
-                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw create <arena> <maxslots> <id>');
+                    $player->sendMessage(Color::RED . 'You do not have permission to use this command.');
                 }
-            break;
+                break;
             case 'npc':
-                if (!empty($args[1])) {
-                    switch ($args[1]) {
-                        case 'game':
-                            $entity = new EntityManager();
-                            $entity->setGame($player);
-                            $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'The npc of game has been placed successfully.');
-                        break;
-                        case 'stats':
-                            $entity = new EntityManager();
-                            $entity->setStats($player);
-                            $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'Tops have been placed successfully.');
-                        break;
-                        case 'remove':
-                            foreach ($player->getWorld()()->getEntities() as $entity) {
-                                if ($entity instanceof EntityHuman) {
-                                    $entity->kill();
-                                } else if ($entity instanceof EntityStats) {
-                                    $entity->kill();
+                if ($player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                    if (!empty($args[1])) {
+                        switch ($args[1]) {
+                            case 'game':
+                                $entity = new EntityManager();
+                                $entity->createEntity($player, 'EntityHuman', 'NPC');
+                                $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'The npc of game has been placed successfully.');
+                                break;
+                            case 'stats':
+                                $entity = new EntityManager();
+                                $entity->createEntity($player, 'EntityStats', null);
+                                $player->sendMessage(SkyWars::getPrefix() . Color::GREEN . 'Tops have been placed successfully.');
+                                break;
+                            case 'remove':
+                                foreach ($player->getWorld()->getEntities() as $entity) {
+                                    if ($entity instanceof EntityHuman || $entity instanceof EntityStats) {
+                                        $entity->kill();
+                                    }
                                 }
-                            }
-                        break;
+                                break;
+                            default:
+                                $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw npc <stats|game|remove>');
+                                break;
+                        }
+                    } else {
+                        $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw npc <stats|game|remove>');
                     }
                 } else {
-                    $player->sendMessage(SkyWars::getPrefix() . Color::RED . 'Usage: /sw npc <stats|game>');
+                    $player->sendMessage(Color::RED . 'You do not have permission to use this command.');
                 }
-            break;
+                break;
             case 'settings':
                 FormManager::getSettingsUI($player);
-            break;
+                break;
             case 'leave':
                 foreach (Arena::getArenas() as $arena) {
-                    if ($player->getWorld()()->getFolderName() == Arena::getName($arena)) {
-                        $player->teleport(Server::getInstance()->getDefaultLevel()->getSafeSpawn());
+                    if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
+                        $player->teleport(Server::getInstance()->getWorldManager()->getDefaultWorld()->getSafeSpawn());
                         $player->getInventory()->clearAll();
                         $player->getArmorInventory()->clearAll();
-                        $player->setImmobile(false);
+                        $player->setNoClientPredictions(false);
                         $player->setAllowFlight(false);
                         $player->setFlying(false);
-                        $player->removeAllEffects();
-                        $player->setGamemode(2);
+                        $player->getEffects()->clear();
+                        $player->setGamemode(GameMode::ADVENTURE());
                         $player->setHealth(20);
-                        $player->setFood(20);
+                        $player->getHungerManager()->setFood(20);
                     } else {
                         $player->sendMessage(Color::RED . 'You are not in any arena.');
                     }
                 }
-            break;
+                break;
             case 'credits':
                 $description = [
                     'Author: ' . Color::GRAY . '@MikeRangelMR',
@@ -108,8 +117,11 @@ class Commands extends Command {
                 foreach ($description as $credits) {
                     $player->sendMessage(Color::GOLD . $credits);
                 }
+                break;
+            default:
+                $player->sendMessage(Color::RED . 'Usage: /sw help');
             break;
-        }
+        }        
         return true;
     }
 }

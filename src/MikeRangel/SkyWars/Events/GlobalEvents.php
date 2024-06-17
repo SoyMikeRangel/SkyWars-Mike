@@ -7,9 +7,9 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Events;
 use MikeRangel\SkyWars\{SkyWars, PluginUtils, Form\FormManager, Tasks\ArenaID, Arena\Arena, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, player\Player, player\GameMode, event\Listener, math\Vector3, item\Item, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, player\GameMode, permission\DefaultPermissions, event\Listener, math\Vector3, item\Item, item\VanillaItems, block\VanillaBlocks, utils\TextFormat as Color};
 use pocketmine\event\{entity\EntityItemPickupEvent, player\PlayerJoinEvent, player\PlayerChatEvent, player\PlayerQuitEvent, player\PlayerDropItemEvent, player\PlayerMoveEvent, player\PlayerItemHeldEvent, player\PlayerInteractEvent, player\PlayerExhaustEvent, block\BlockBreakEvent, block\BlockPlaceEvent, entity\EntityTeleportEvent, entity\EntityDamageEvent, entity\EntityDamageByChildEntityEvent, entity\EntityDamageByEntityEvent};
-use pocketmine\level\sound\{BlazeShootSound};
+use pocketmine\world\sound\{BlazeShootSound};
 
 class GlobalEvents implements Listener {
 
@@ -65,62 +65,37 @@ class GlobalEvents implements Listener {
             }
         }
     }
-
-    /*public function Commands(PlayerCommandPreprocessEvent $event) {
-        $player = $event->getPlayer();
-        $cmd = explode(' ', strtolower($event->getMessage()));
-        foreach (Arena::getArenas() as $arena) {
-            if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
-                if ($player->getGamemode() == 0 || $player->getGamemode() == 2 || $player->getGamemode() == 3) {
-                    if ($cmd[0] === '/gamemode') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/gm') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/fly') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/tp') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/kick') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/stop') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/kill') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/give') {
-                        $event->cancel();
-                    } else if ($cmd[0] === '/hub') {
-                        $event->cancel();
-                        $player->sendMessage(Color::RED . 'Please enter /sw leave to exit the game.');
-                    } else if ($cmd[0] === '/lobby') {
-                        $event->cancel();
-                        $player->sendMessage(Color::RED . 'Please enter /sw leave to exit the game.');
-                    } else if ($cmd[0] === '/spawn') {
-                        $event->cancel();
-                        $player->sendMessage(Color::RED . 'Please enter /sw leave to exit the game.');
-                    }
-                }
-            }
-        }
-    }*/
                    
-    public function setFunctions(PlayerInteractEvent $event) {
+    public function setFunctions(PlayerInteractEvent $event): void {
         $player = $event->getPlayer();
-        $id = $event->getItem()->getTypeId();
-        $damage = $event->getItem()->getMeta();
-        $name = $event->getItem()->getCustomName();
+        $item = $event->getItem();
+        $name = $item->getCustomName();
+        $playerName = $player->getName();
+        $currentTime = microtime(true);
+        if (isset(SkyWars::$data['click'][$playerName]) && ($currentTime - SkyWars::$data['click'][$playerName] < 0.5)) {
+            return;
+        }
+        SkyWars::$data['click'][$playerName] = $currentTime;
         foreach (Arena::getArenas() as $arena) {
-            if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
-                if ($player->getGamemode() == 0 || $player->getGamemode() == 2 || $player->getGamemode() == 3) {
-                    if ($id == 340 && $name == Color::LIGHT_PURPLE . "Kits\n§r§fClick to select") {
+            if ($player->getWorld()->getFolderName() === Arena::getName($arena)) {
+                if (!$player->isCreative()) {
+                    $kitsItem = VanillaItems::BOOK()->setCustomName(Color::LIGHT_PURPLE . "Kits\n§r§fClick to select");
+                    $startItem = VanillaItems::COMPASS()->setCustomName(Color::GREEN . "Start\n§r§fClick to select");
+                    $settingsItem = VanillaItems::TOTEM()->setCustomName(Color::AQUA . "Settings\n§r§fClick to select");
+                    $voteChestItem = VanillaBlocks::CHEST()->asItem()->setCustomName(Color::GOLD . "Vote Chest\n§r§fClick to select");
+                    $leaveItem = VanillaBlocks::BED()->asItem()->setCustomName(Color::RED . "Leave\n§r§fClick to select");
+    
+                    if ($item->equals($kitsItem)) {
                         FormManager::getKits($player);
-                    } else if ($id == 345 && $name == Color::GREEN . "Start\n§r§fClick to select") {
-                        if ($player->hasPermission('skywars.start.perm')) {
-                            if (count(Server::getInstance()->getWorldManager()->getWorldByName($player->getWorld()->getFolderName())->getPlayers()) < 2) {
+                        $event->cancel();
+                    } elseif ($item->equals($startItem)) {
+                        if ($player->hasPermission('skywars.start.perm') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                            if (count($player->getWorld()->getPlayers()) < 2) {
                                 $player->sendMessage(Color::RED . 'More players are needed to access this feature.');
                             } else {
                                 if (Arena::getTimeWaiting($arena) >= 0 && Arena::getTimeWaiting($arena) <= 5) {
                                     $player->sendMessage(Color::RED . '¡Opps! It seems that the game is about to begin.');
-                                    $player->getWorld()->addSound(new BlazeShootSound($player));
+                                    $player->getWorld()->addSound($player->getPosition(), new BlazeShootSound());
                                 } else {
                                     Arena::setTimeWaiting($arena, 5);
                                     foreach ($player->getWorld()->getPlayers() as $players) {
@@ -130,28 +105,34 @@ class GlobalEvents implements Listener {
                             }
                         } else {
                             $player->sendMessage(Color::RED . 'Adquire a range to access this function.');
-                            $player->getWorld()->addSound(new BlazeShootSound($player));
+                            $player->getWorld()->addSound($player->getPosition(), new BlazeShootSound());
                         }
-                    } else if ($id == 54 && $name == Color::GOLD . "Vote Chest\n§r§fClick to select") {
+                        $event->cancel();
+                    } elseif ($item->equals($settingsItem)) {
+                        FormManager::getSettingsUI($player);
+                        $event->cancel();
+                    } elseif ($item->equals($voteChestItem)) {
                         FormManager::getVotesUI($player);
-                    } else if ($id == 355 && $damage == 14 && $name == Color::RED . "Leave\n§r§fClick to select") {
+                        $event->cancel();
+                    } elseif ($item->equals($leaveItem)) {
                         $index = array_search($player->getName(), SkyWars::$data['queue']);
-		                if ($index != -1) {
+                        if ($index !== false) {
                             unset(SkyWars::$data['queue'][$index]);
                         }
                         Server::getInstance()->dispatchCommand($player, 'sw leave');
+                        $event->cancel();
                     }
                 }
             }
         }
-    }
+    }    
 
     public function onHeld(PlayerItemHeldEvent $event) {
     	$player = $event->getPlayer();
         $item = $event->getItem()->getCustomName();
         foreach (Arena::getArenas() as $arena) {
             if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
-                if ($player->getGamemode() == 3) {
+                if ($player->isSpectator()) {
                     if ($item == Color::GOLD . "Players Reaming\n§r§fClick to select") {
                         $index = array_search($player->getName(), SkyWars::$data['queue']);
 		                if ($index != -1) {
@@ -201,7 +182,7 @@ class GlobalEvents implements Listener {
             $config = SkyWars::getConfigs('Arenas/' . $arena);
             $lobby = $config->get('lobby');
             if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
-                if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
+                if (in_array(Arena::getStatus($arena), ['waiting', 'end'])) {
                     if ($position->getY() < 3) {
                         $player->teleport(new Vector3($lobby[0], $lobby[1], $lobby[2]));
                     }
@@ -209,6 +190,7 @@ class GlobalEvents implements Listener {
             }
         }
     }
+    
 
     public function onProtect(EntityDamageEvent $event) {
         $player = $event->getEntity();
@@ -233,7 +215,7 @@ class GlobalEvents implements Listener {
                         if (Arena::getTimeGame($arena) >= 589 && Arena::getTimeGame($arena) <= 600) {
                             $event->cancel();
                         }
-                        if ($player->getGamemode() == 3) {
+                        if ($player->isSpectator()) {
                             $event->cancel();
                         }
                     }
@@ -254,7 +236,7 @@ class GlobalEvents implements Listener {
                 if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
                     $event->cancel();
                 } else {
-                    if ($player->getGamemode()->getId() === Player::SPECTATOR) {
+                    if ($player->isSpectator()) {
                         $event->cancel();
                     }
                 }
@@ -269,7 +251,7 @@ class GlobalEvents implements Listener {
                 if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
                     $event->cancel();
                 } else {
-                    if ($player->getGamemode() == 3) {
+                    if ($player->isSpectator()) {
                         $event->cancel();
                     }
                 }
@@ -277,25 +259,15 @@ class GlobalEvents implements Listener {
         }
     }
 
-    public function onBlock(BlockBreakEvent $event) {
+    public function onBlock(BlockBreakEvent $event): void {
         $player = $event->getPlayer();
         $block = $event->getBlock();
         foreach (Arena::getArenas() as $arena) {
-            if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
+            if ($player->getWorld()->getFolderName() === Arena::getName($arena)) {
                 if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
                     $event->cancel();
                 } else {
-                    if ($block->getID() == 56) {
-                        $items = [310, 311, 312, 313, 276];
-                        Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena))->dropItem(new Vector3($block->getX(), $block->getY(), $block->getZ()), Item::get($items[array_rand($items)], 0, 1));
-                    } else if ($block->getID() == 14) {
-                        $items = [314, 315, 316, 317, 286];
-                        Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena))->dropItem(new Vector3($block->getX(), $block->getY(), $block->getZ()), Item::get($items[array_rand($items)], 0, 1));
-                    } else if ($block->getID() == 15){
-                        $items = [306, 307, 308, 309, 257];
-                        Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName($arena))->dropItem(new Vector3($block->getX(), $block->getY(), $block->getZ()), Item::get($items[array_rand($items)], 0, 1));
-                    }
-                    $event->setCancelled(false);
+                    $event->uncancel();
                 }
             }
         }
@@ -308,7 +280,7 @@ class GlobalEvents implements Listener {
                 if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
                     $event->cancel();
                 } else {
-                    $event->setCancelled(false);
+                    $event->uncancel();
                 }
             }
         }
@@ -341,7 +313,7 @@ class GlobalEvents implements Listener {
                 if (Arena::getTimeWaiting($arena) >= 0 && Arena::getTimeWaiting($arena) <= 10) {
                     PluginUtils::unsetCage($player, $config->get('cage'));
                 }
-                if ($player->getGamemode() == 0 || $player->getGamemode() == 2) {
+                if ($player->isSurvival() || $player->isAdventure()) {
                     foreach ($player->getWorld()->getPlayers() as $players) {
                         if (in_array(Arena::getStatus($arena), ['waiting', 'ingame'])) {
                             $remain = (count(Arena::getPlayers($arena)) - 1);
@@ -373,51 +345,6 @@ class GlobalEvents implements Listener {
         }
     }
 
-    public function onChange(EntityTeleportEvent $event) {
-        $entity = $event->getEntity();
-        if (!$entity instanceof Player) {
-            return;
-        }
-        $player = $entity;
-        $from = $event->getFrom();
-        $to = $event->getTo();
-        if ($from->getWorld()->getFolderName() !== $to->getWorld()->getFolderName()) {
-            $config = SkyWars::getConfigs('Profiles/' . $player->getName());
-            foreach (Arena::getArenas() as $arena) {
-                if ($to->getWorld()->getFolderName() === Arena::getName($arena)) {
-                    if (Arena::getTimeWaiting($arena) >= 0 && Arena::getTimeWaiting($arena) <= 10) {
-                        PluginUtils::unsetCage($player, $config->get('cage'));
-                    }
-                    if ($player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE()) {
-                        foreach ($to->getWorld()->getPlayers() as $players) {
-                            if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'ingame'])) {
-                                $remain = (count(Arena::getPlayers($arena)) - 1);
-                                $players->sendMessage(Color::GREEN . Color::BOLD . '» ' . Color::RESET . Color::RED . $player->getName() . ' Left the game. ' . Color::RED . '[' . $remain . '/' . Arena::getSpawns($arena) . ']');
-                                if (Arena::getStatus($arena) === 'ingame' && $remain > 1) {
-                                    $players->sendMessage(Color::RED . $remain . ' players remain alive.');
-                                }
-                            }
-                        }
-                    }
-                    $index = array_search($player->getName(), SkyWars::$data['queue']);
-                    if ($index !== false) {
-                        unset(SkyWars::$data['queue'][$index]);
-                    }
-                    $api = SkyWars::getScore();
-                    $api->remove($player);
-                    $player->getArmorInventory()->clearAll();
-                    $player->setMovementSpeed(0);
-                    $player->setAllowFlight(false);
-                    $player->setFlying(false);
-                    $player->getEffects()->clear();
-                    $player->setGamemode(GameMode::adventure());
-                    $player->setHealth(20);
-                    $player->getHungerManager()->setFood(20);
-                }
-            }
-        }
-    }
-
     public function onHunger(PlayerExhaustEvent $event) {
         $player = $event->getPlayer();
         if ($player instanceof Player) {
@@ -426,7 +353,7 @@ class GlobalEvents implements Listener {
                     if (in_array(Arena::getStatus($arena), ['waiting', 'starting', 'end'])) {
                         $event->cancel();
                     } else {
-                        if ($player->getGamemode() == 3) {
+                        if ($player->isSpectator()) {
                             $event->cancel();
                         }
                     }
@@ -475,7 +402,7 @@ class GlobalEvents implements Listener {
                                         $damage = $players->getName();
                                     }
                                     if ($damage != null) {
-                                        $damager = Server::getInstance()->getPlayer($damage);
+                                        $damager = Server::getInstance()->getPlayerExact($damage);
                                         PluginUtils::getEventDamage($player, $arena, 'Has died burned by', $damager);
                                     } else {
                                         PluginUtils::getEventDamage($player, $arena, 'Has died burned');
@@ -493,7 +420,7 @@ class GlobalEvents implements Listener {
                                         $damage = $players->getName();
                                     }
                                     if ($damage != null) {
-                                        $damager = Server::getInstance()->getPlayer($damage);
+                                        $damager = Server::getInstance()->getPlayerExact($damage);
                                         PluginUtils::getEventDamage($player, $arena, 'It has exploded into a thousand pieces by', $damager);
                                     } else {
                                         PluginUtils::getEventDamage($player, $arena, 'It has exploded into a thousand pieces');
@@ -510,7 +437,7 @@ class GlobalEvents implements Listener {
                                         $damage = $players->getName();
                                     }
                                     if ($damage != null) {
-                                        $damager = Server::getInstance()->getPlayer($damage);
+                                        $damager = Server::getInstance()->getPlayerExact($damage);
                                         PluginUtils::getEventDamage($player, $arena, 'He died from a strong blow to the floor by', $damager);
                                     } else {
                                         PluginUtils::getEventDamage($player, $arena, 'He died from a strong blow to the floor');
@@ -527,7 +454,7 @@ class GlobalEvents implements Listener {
                                         $damage = $players->getName();
                                     }
                                     if ($damage != null) {
-                                        $damager = Server::getInstance()->getPlayer($damage);
+                                        $damager = Server::getInstance()->getPlayerExact($damage);
                                         PluginUtils::getEventDamage($player, $arena, 'Has fallen into the void by', $damager);
                                     } else {
                                         PluginUtils::getEventDamage($player, $arena, 'Has fallen into the void');
@@ -544,7 +471,7 @@ class GlobalEvents implements Listener {
                                         $damage = $players->getName();
                                     }
                                     if ($damage != null) {
-                                        $damager = Server::getInstance()->getPlayer($damage);
+                                        $damager = Server::getInstance()->getPlayerExact($damage);
                                         PluginUtils::getEventDamage($player, $arena, 'Has died for potions by', $damager);
                                     } else {
                                         PluginUtils::getEventDamage($player, $arena, 'Has died for potions');

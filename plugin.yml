@@ -3,8 +3,8 @@ author: Mike Rangel
 main: MikeRangel\SkyWars\SkyWars
 version: 1.0.0
 api: [1.0.0, 2.0.0, 3.0.0, 4.0.0, 5.0.0]
-website: 'https://honorgames.com.mx'
+website: ''
 permissions:
-  sw.cmd:
+  skywars.command:
     description: "Allows use of SkyWars commands"
-    default: op
+    default: true

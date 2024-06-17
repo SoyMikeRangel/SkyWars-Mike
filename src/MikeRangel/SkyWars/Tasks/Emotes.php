@@ -41,8 +41,6 @@ class Emotes extends Task {
                 $player->setSkin(SkyWars::$data['skins'][$player->getName()]);
                 $player->sendSkin();
             }
-        } else {
-            SkyWars::getInstance()->getScheduler()->cancelTask($this->getTaskId());
         }
     }
 }

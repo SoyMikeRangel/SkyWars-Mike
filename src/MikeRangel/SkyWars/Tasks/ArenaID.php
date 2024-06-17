@@ -56,7 +56,7 @@ class ArenaID extends Task {
                 }
             }
         } else {
-            SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new ArenaID($player), 20)->cancel();
+            SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new ArenaID($player), 10)->cancel();
         }
     }
 }
@@ -77,7 +77,7 @@ class NewGame extends Task {
                 SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new ArenaID($player), 10);
             }
         } else {
-            SkyWars::getInstance()->getScheduler()->cancelTask($this->getTaskId());
+            SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new NewGame($player), 10)->cancel();
         }
     }
 }
@@ -99,7 +99,7 @@ class NewID extends Task {
                 SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new ArenaID($player), 10);
             }
         } else {
-            SkyWars::getInstance()->getScheduler()->cancelTask($this->getTaskId());
+            SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new NewID($player), 10)->cancel();
         }
     }
 }

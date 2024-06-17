@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars\Form;
 use MikeRangel\SkyWars\{SkyWars, PluginUtils, Arena\Arena, Tasks\Emotes, Tasks\ArenaID, Form\MenuForm, Form\elements\Button};
-use pocketmine\{Server, player\Player, item\Item, entity\Effect, math\Vector3, entity\EffectInstance, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, permission\DefaultPermissions, item\Item, entity\Effect, math\Vector3, entity\EffectInstance, utils\TextFormat as Color};
 
 class FormManager {
 
@@ -136,8 +136,8 @@ class FormManager {
     public static function getButtonsAlive(Player $player) {
         $buttons = [];
         foreach (Arena::getArenas() as $arena) {
-            if ($player->getLevel()->getFolderName() == Arena::getName($arena)) {
-                foreach ($player->getLevel()->getPlayers() as $players) {
+            if ($player->getWorld()->getFolderName() == Arena::getName($arena)) {
+                foreach ($player->getWorld()->getPlayers() as $players) {
                     if ($players->getGamemode() == 0) {
                         $buttons[] = new Button(Color::BOLD . $players->getName() . "\n" . Color::RESET . Color::BLACK . 'Click to view');
                     }
@@ -151,28 +151,28 @@ class FormManager {
     public static function getVotesUI(Player $player) {
         $player->sendForm(new MenuForm(Color::BOLD . Color::DARK_AQUA . 'Vote Chest', Color::GRAY . 'Vote for your favorite chest.',
         [
-            new Button(Color::BOLD . Color::YELLOW . 'OP' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Votes: ' . Color::GREEN . count(SkyWars::$data['vote'][$player->getLevel()->getFolderName()]['op'])),
-            new Button(Color::BOLD . Color::YELLOW . 'Basic' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Votes: ' . Color::GREEN . count(SkyWars::$data['vote'][$player->getLevel()->getFolderName()]['normal'])),
+            new Button(Color::BOLD . Color::YELLOW . 'OP' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Votes: ' . Color::GREEN . count(SkyWars::$data['vote'][$player->getWorld()->getFolderName()]['op'])),
+            new Button(Color::BOLD . Color::YELLOW . 'Basic' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Votes: ' . Color::GREEN . count(SkyWars::$data['vote'][$player->getWorld()->getFolderName()]['normal'])),
         ],
         static function (Player $player, Button $button) : void {
             switch ($button->getValue()) {
                 case 0:
-                    if ($player->hasPermission('skywars.vote.perm')) {
-                        if (count(Server::getInstance()->getLevelByName($player->getLevel()->getFolderName())->getPlayers()) < 2) {
+                    if ($player->hasPermission('skywars.vote.perm') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                        if (count(Server::getInstance()->getWorldManager()->getWorldByName($player->getWorld()->getFolderName())->getPlayers()) < 2) {
                             $player->sendMessage(Color::RED . 'More players are needed to access this feature.');
                         } else {
-                            PluginUtils::setVote($player, $player->getLevel()->getFolderName(), 'op');
+                            PluginUtils::setVote($player, $player->getWorld()->getFolderName(), 'op');
                         }
                     } else {
                         $player->sendMessage(Color::RED . 'Adquire a range to access this function.');
                     }
                 break;
                 case 1:
-                    if ($player->hasPermission('skywars.vote.perm')) {
-                        if (count(Server::getInstance()->getLevelByName($player->getLevel()->getFolderName())->getPlayers()) < 2) {
+                    if ($player->hasPermission('skywars.vote.perm') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
+                        if (count(Server::getInstance()->getWorldManager()->getWorldByName($player->getWorld()->getFolderName())->getPlayers()) < 2) {
                             $player->sendMessage(Color::RED . 'More players are needed to access this feature');
                         } else {
-                            PluginUtils::setVote($player, $player->getLevel()->getFolderName(), 'normal');
+                            PluginUtils::setVote($player, $player->getWorld()->getFolderName(), 'normal');
                         }
                     } else {
                         $player->sendMessage(Color::RED . 'Adquire a range to access this function.');
@@ -275,7 +275,7 @@ class FormManager {
         static function (Player $player, Button $button) : void {
             switch ($button->getValue()) {
                 case 0:
-                    if ($player->hasPermission('kit.famous')) {
+                    if ($player->hasPermission('kit.famous') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'asesino');
                         $config->save();
@@ -285,7 +285,7 @@ class FormManager {
                     }
                 break;
                 case 1:
-                    if ($player->hasPermission('kit.yt')) {
+                    if ($player->hasPermission('kit.yt') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'lumberhack');
                         $config->save();
@@ -295,7 +295,7 @@ class FormManager {
                     }
                 break;
                 case 2:
-                    if ($player->hasPermission('kit.youtuber')) {
+                    if ($player->hasPermission('kit.youtuber') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'enderman');
                         $config->save();
@@ -305,7 +305,7 @@ class FormManager {
                     }
                 break;
                 case 3:
-                    if ($player->hasPermission('kit.youtuber')) {
+                    if ($player->hasPermission('kit.youtuber') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'rusheryt');
                         $config->save();
@@ -315,7 +315,7 @@ class FormManager {
                     }
                 break;
                 case 4:
-                    if ($player->hasPermission('kit.famous')) {
+                    if ($player->hasPermission('kit.famous') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'boomberman');
                         $config->save();
@@ -330,27 +330,27 @@ class FormManager {
 
     public static function getButtonsYT(Player $player) {
         $buttons = [];
-        if ($player->hasPermission('kit.famous')) {
+        if ($player->hasPermission('kit.famous') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Asesino' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Asesino' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.yt')) {
+        if ($player->hasPermission('kit.yt') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'LumberHack' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'LumberHack' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.youtuber')) {
+        if ($player->hasPermission('kit.youtuber') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Enderman' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Enderman' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.youtuber')) {
+        if ($player->hasPermission('kit.youtuber') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Rusher' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Rusher' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.famous')) {
+        if ($player->hasPermission('kit.famous') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Boomberman' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Boomberman' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
@@ -364,7 +364,7 @@ class FormManager {
         static function (Player $player, Button $button) : void {
             switch ($button->getValue()) {
                 case 0:
-                    if ($player->hasPermission('kit.Pacman')) {
+                    if ($player->hasPermission('kit.Pacman') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'rusher');
                         $config->save();
@@ -374,7 +374,7 @@ class FormManager {
                     }
                 break;
                 case 1:
-                    if ($player->hasPermission('kit.Pacman')) {
+                    if ($player->hasPermission('kit.Pacman') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'baseball');
                         $config->save();
@@ -384,7 +384,7 @@ class FormManager {
                     }
                 break;
                 case 2:
-                    if ($player->hasPermission('kit.Happier')) {
+                    if ($player->hasPermission('kit.Happier') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'ghost');
                         $config->save();
@@ -394,7 +394,7 @@ class FormManager {
                     }
                 break;
                 case 3:
-                    if ($player->hasPermission('kit.Happier')) {
+                    if ($player->hasPermission('kit.Happier') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'healer');
                         $config->save();
@@ -404,7 +404,7 @@ class FormManager {
                     }
                 break;
                 case 4:
-                    if ($player->hasPermission('kit.Vip')) {
+                    if ($player->hasPermission('kit.Vip') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'archer');
                         $config->save();
@@ -414,7 +414,7 @@ class FormManager {
                     }
                 break;
                 case 5:
-                    if ($player->hasPermission('kit.Donator')) {
+                    if ($player->hasPermission('kit.Donator') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'piromo');
                         $config->save();
@@ -424,7 +424,7 @@ class FormManager {
                     }
                 break;
                 case 6:
-                    if ($player->hasPermission('kit.saltamontes')) {
+                    if ($player->hasPermission('kit.saltamontes') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
                         $config = SkyWars::getConfigs('Profiles/' . $player->getName());
                         $config->set('kit', 'saltamontes');
                         $config->save();
@@ -439,37 +439,37 @@ class FormManager {
 
     public static function getButtonsRanks(Player $player) {
         $buttons = [];
-        if ($player->hasPermission('kit.Pacman')) {
+        if ($player->hasPermission('kit.Pacman') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Rusher' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Rusher' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.Pacman')) {
+        if ($player->hasPermission('kit.Pacman') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Baseball' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Baseball' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.Happier')) {
+        if ($player->hasPermission('kit.Happier') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Ghost' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Ghost' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.Happier')) {
+        if ($player->hasPermission('kit.Happier') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Healer' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Healer' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.Vip')) {
+        if ($player->hasPermission('kit.Vip') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Archer' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Archer' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.Donator')) {
+        if ($player->hasPermission('kit.Donator') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Piromo' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Piromo' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');
         }
-        if ($player->hasPermission('kit.saltamontes')) {
+        if ($player->hasPermission('kit.saltamontes') || $player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) {
             $buttons[] = new Button(Color::BOLD . 'Saltamontes' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::GREEN . 'Unlocked');
         } else {
             $buttons[] = new Button(Color::BOLD . 'Saltamontes' . Color::RESET . "\n" . Color::RESET . Color::BLACK . 'Status: ' . Color::RED . 'Locked');

@@ -7,7 +7,7 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars;
 use MikeRangel\SkyWars\{Arena\Arena, API\ScoreAPI, Executor\Commands, Tasks\EntityStatsUpdate, Tasks\NewMap, Events\GlobalEvents, Tasks\GameScheduler, Tasks\EntityUpdate, Entity\types\EntityHuman, Entity\types\EntityStats};
-use pocketmine\{Server, player\Player, world\WorldManager, world\World, nbt\tag\CompoundTag, plugin\PluginBase, entity\Entity, entity\EntityFactory, entity\EntityDataHelper, utils\Config, utils\TextFormat as Color};
+use pocketmine\{Server, player\Player, world\WorldManager, world\World, nbt\tag\CompoundTag, plugin\PluginBase, entity\Entity, entity\Human, entity\EntityFactory, entity\EntityDataHelper, utils\Config, utils\TextFormat as Color};
 
 class SkyWars extends PluginBase {
     public static $instance;
@@ -21,6 +21,7 @@ class SkyWars extends PluginBase {
         'emotes' => [],
         'queue' => [],
         'skins' => [],
+        'click' => [],
         'configurator' => []
     ];
 
@@ -38,7 +39,6 @@ class SkyWars extends PluginBase {
                 ResetMap::resetZip(Arena::getName($arena));
             }
         }
-        $this->getScheduler()->scheduleRepeatingTask(new EntityStatsUpdate($this), 2 * 25);
         $this->loadEntitys();
         $this->loadCommands();
         $this->loadEvents();
@@ -67,7 +67,7 @@ class SkyWars extends PluginBase {
         self::$data['vote'][Arena::getName($arena)]['normal'] = [];
         self::$data['kills'][Arena::getName($arena)] = ['Steve' => 0, 'Enderman' => 0];
         $config->set('status', 'waiting');
-        $config->set('lobbytime', 40);
+        $config->set('lobbytime', 30);
         $config->set('startingtime', 11);
         $config->set('gametime', 600);
         $config->set('refilltime', 120);
@@ -90,31 +90,18 @@ class SkyWars extends PluginBase {
         'Spawner.yml', 'Temple.yml', 'Tree.yml', 'TreeLight.yml', 'Woold.yml'] as $files) {
             $this->saveResource('Cages/' . $files);
         }
-        $config = self::getConfigs('config');
-        if ($config->get('chestitems') == null || $config->get('chestitemsop') == null) {
-            $config->set('chestitemsop', [[306, 0, 1], [307, 0, 1], [308, 0, 1], [309, 0, 1], [309, 0, 1], [310, 0, 1], [311, 0, 1],
-            [312, 0, 1], [313, 0, 1], [267, 0, 1], [276, 0, 1], [279, 0, 1], [278, 0, 1], [257, 0, 1], [322, 0, 2], [322, 0, 4], [368, 0, 1],
-            [364, 0, 3], [364, 0, 7], [1, 0, 32], [5, 0, 32], [261, 0, 1], [262, 0, 15], [262, 0, 10], [332, 0, 7], [332, 0, 14], [345, 0, 1],
-            [1, 0, 32], [5, 0, 32], [46, 0, 3], [259, 0, 1], [325, 8, 1], [325, 8, 1], [325, 10, 1], [325, 10, 1]]);
-            $config->save();
-            $config->set('chestitems', [[306, 0, 1], [307, 0, 1], [308, 0, 1], [309, 0, 1], [309, 0, 1], [310, 0, 1], [311, 0, 1],
-            [312, 0, 1], [313, 0, 1], [267, 0, 1], [276, 0, 1], [279, 0, 1], [278, 0, 1], [257, 0, 1], [322, 0, 2], [322, 0, 4], [368, 0, 1],
-            [364, 0, 3], [364, 0, 7], [1, 0, 32], [5, 0, 32], [261, 0, 1], [262, 0, 15], [262, 0, 10], [332, 0, 7], [332, 0, 14], [345, 0, 1],
-            [1, 0, 32], [5, 0, 32], [46, 0, 3], [259, 0, 1], [325, 8, 1], [325, 8, 1], [325, 10, 1], [325, 10, 1]]);
-            $config->save();
-        }
     }
-    
-    public function loadEntitys() : void {
-		$entities = [EntityHuman::class, EntityStats::class];
-		foreach ($entities as $entityClass) {
+
+    public function loadEntitys(): void {
+        $entities = [EntityHuman::class, EntityStats::class];
+        foreach ($entities as $entityClass) {
             EntityFactory::getInstance()->register($entityClass, function(World $world, CompoundTag $nbt) use ($entityClass): Entity {
                 $location = EntityDataHelper::parseLocation($nbt, $world);
                 $skin = Human::parseSkinNBT($nbt);
                 return new $entityClass($location, $skin, $nbt);
             }, [$entityClass::getNetworkTypeId()]);
         }
-	}
+    }
 
 	public function loadCommands() : void {
 		$values = [new Commands($this)];
@@ -137,6 +124,7 @@ class SkyWars extends PluginBase {
 		foreach ($values as $tasks) {
 			$this->getScheduler()->scheduleRepeatingTask($tasks, 20);
 		}
+        $this->getScheduler()->scheduleRepeatingTask(new EntityStatsUpdate($this), 2 * 25);
         unset($values);
     }
 

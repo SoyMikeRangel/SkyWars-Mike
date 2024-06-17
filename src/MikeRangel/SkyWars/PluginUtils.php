@@ -7,9 +7,9 @@ declare(strict_types=1);
 */
 namespace MikeRangel\SkyWars;
 use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Tasks\NewGame, Tasks\ArenaID};
-use pocketmine\{Server, player\Player, player\GameMode, item\Item, tile\Tile, tile\Chest, inventory\ChestInventory, entity\Effect, entity\EffectInstance, math\Vector3, entity\Entity, block\Block, block\VanillaBlocks, utils\Color, utils\TextFormat};
-use pocketmine\network\mcpe\protocol\{AddActorPacket, ActorEventPacket, PlaySoundPacket, LevelSoundEventPacket, StopSoundPacket};
-use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance};
+use pocketmine\{Server, world\World, player\Player, player\GameMode, item\Item, block\tile\Chest, block\inventory\ChestInventory, entity\effect\EffectInstance, entity\effect\VanillaEffects, math\Vector3, entity\Entity, block\Block, item\VanillaItems, block\VanillaBlocks, utils\TextFormat as Color};
+use pocketmine\network\mcpe\protocol\{AddActorPacket, ActorEventPacket, PlaySoundPacket, LevelSoundEventPacket, StopSoundPacket, types\entity\EntityIds, types\entity\PropertySyncData, types\LevelSoundEvent};
+use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance, VanillaEnchantments};
 use pocketmine\world\sound\{EndermanTeleportSound};
 
 class PluginUtils {
@@ -22,33 +22,12 @@ class PluginUtils {
         SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new ArenaID($player), 10);
     }
 
-    public static function getContents() {
-        $config = SkyWars::getConfigs('config');
-        return array_rand($config->get('chestitems'));
-    }
-
-    public static function getContentsOP() {
-        $config = SkyWars::getConfigs('config');
-        return array_rand($config->get('chestitemsop'));
-    }
-
-    public static function getContentsTwo() {
-        $config = SkyWars::getConfigs('config');
-        return $config->get('chestitems');
-    }
-
-    public static function getContentsTwoOP() {
-        $config = SkyWars::getConfigs('config');
-        return $config->get('chestitemsop');
-    }
-
     public static function playSound(Player $player, string $sound, float $volume = 0, float $pitch = 0) {
-        $position = $player->getPosition();
         $pk = new PlaySoundPacket();
         $pk->soundName = $sound;
-        $pk->x = (int)$position->getX();
-        $pk->y = (int)$position->getY();
-        $pk->z = (int)$position->getZ();
+        $pk->x = (int) $player->getPosition()->getX();
+        $pk->y = (int) $player->getPosition()->getY();
+        $pk->z = (int) $player->getPosition()->getZ();
         $pk->volume = $volume;
         $pk->pitch = $pitch;
         $player->getNetworkSession()->sendDataPacket($pk);
@@ -115,16 +94,20 @@ class PluginUtils {
         }
     }
 
-    public static function addStrike(array $players, Player $deathPlayer) {
-		$packet = new AddActorPacket();
-		$packet->type = 93;
-		$packet->entityRuntimeId = Entity::$entityCount++;
-		$packet->metadata = [];
-		$packet->position = $deathPlayer->asVector3()->add(0, $height = 0);
-		$packet->yaw = $deathPlayer->getYaw();
-		$packet->pitch = $deathPlayer->getPitch();
+    public static function addStrike(array $players, Player $deathPlayer): void {
+        $packet = new AddActorPacket();
+        $packet->actorRuntimeId = Entity::nextRuntimeId();
+        $packet->actorUniqueId = $packet->actorRuntimeId;
+        $packet->type = EntityIds::LIGHTNING_BOLT;
+        $packet->position = $deathPlayer->getPosition()->asVector3();
+        $packet->yaw = $deathPlayer->getLocation()->getYaw();
+        $packet->pitch = $deathPlayer->getLocation()->getPitch();
+        $packet->headYaw = $deathPlayer->getLocation()->getYaw();
+        $packet->metadata = [];
+        $packet->syncedProperties = new PropertySyncData([], []);
+
         foreach ($players as $player) {
-            $player->dataPacket($packet);
+            $player->getNetworkSession()->sendDataPacket($packet);
             self::playSound($player, 'ambient.weather.lightning.impact', 1, 1);
         }
     }
@@ -134,34 +117,34 @@ class PluginUtils {
             case 'op':
                 if (isset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()])) {
                     unset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()]);
-                    $player->sendMessage(TextFormat::RED . 'Your vote has been smashed.');
+                    $player->sendMessage(Color::RED . 'Your vote has been smashed.');
                 } else {
                     if (!isset(SkyWars::$data['vote'][$arena]['op'][$player->getName()])) {
                         SkyWars::$data['vote'][$arena]['op'][$player->getName()] = $player->getName();
                         foreach (Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers() as $players) {
-                            $players->sendMessage(TextFormat::GOLD . $player->getName() . ' You voted for chests OP.');
-                            $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
+                            $players->sendMessage(Color::GOLD . $player->getName() . ' You voted for chests OP.');
+                            $player->getWorld()->broadcastPacketToViewers($player->getPosition(), LevelSoundEventPacket::create(LevelSoundEvent::ENDERCHEST_OPEN, new Vector3($player->getPosition()->getFloorX(), $player->getPosition()->getFloorY(), $player->getPosition()->getFloorZ()), 0, ":", false, false));
                         }
                     } else {
                         unset(SkyWars::$data['vote'][$arena]['op'][$player->getName()]);
-                        $player->sendMessage(TextFormat::RED . 'Your vote has been smashed.');
+                        $player->sendMessage(Color::RED . 'Your vote has been smashed.');
                     }
                 }
             break;
             case 'normal':
                 if (isset(SkyWars::$data['vote'][$arena]['op'][$player->getName()])) {
                     unset(SkyWars::$data['vote'][$arena]['op'][$player->getName()]);
-                    $player->sendMessage(TextFormat::RED . 'Your vote has been smashed.');
+                    $player->sendMessage(Color::RED . 'Your vote has been smashed.');
                 } else {
                     if (!isset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()])) {
                         SkyWars::$data['vote'][$arena]['normal'][$player->getName()] = $player->getName();
                         foreach (Server::getInstance()->getWorldManager()->getWorldByName($arena)->getPlayers() as $players) {
-                            $players->sendMessage(TextFormat::GOLD . $player->getName() . ' You voted for chests Basic.');
-                            $player->getWorld()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_ENDERCHEST_OPEN);
+                            $players->sendMessage(Color::GOLD . $player->getName() . ' You voted for chests Basic.');
+                            $player->getWorld()->broadcastPacketToViewers($player->getPosition(), LevelSoundEventPacket::create(LevelSoundEvent::ENDERCHEST_OPEN, new Vector3($player->getPosition()->getFloorX(), $player->getPosition()->getFloorY(), $player->getPosition()->getFloorZ()), 0, ":", false, false));
                         }
                     } else {
                         unset(SkyWars::$data['vote'][$arena]['normal'][$player->getName()]);
-                        $player->sendMessage(TextFormat::RED . 'Your vote has been smashed.');
+                        $player->sendMessage(Color::RED . 'Your vote has been smashed.');
                     }
                 }
             break;
@@ -172,66 +155,61 @@ class PluginUtils {
         $config = SkyWars::getConfigs('Arenas/' . $arena);
         $lobby = $config->get('lobbyspecters');
         if (count(Arena::getPlayers($arena)) != 1) {
-            if ($player->getGamemode() != 3) {
+            if (!$player->getGamemode()->equals(GameMode::SPECTATOR())) {
                 if ($damager != false) {
                     SkyWars::$data['kills'][Arena::getName($arena)][$damager->getName()] = SkyWars::$data['kills'][Arena::getName($arena)][$damager->getName()] + 1;
                     $kills = SkyWars::getConfigs('kills');
                     $kills->set($damager->getName(), $kills->get($damager->getName()) + 1);
                     $kills->save();
                     foreach ($damager->getWorld()->getPlayers() as $players) {
-                        $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' ' . $cause . ' ' . TextFormat::GOLD . $damager->getName() . '.');
+                        $players->sendMessage(Color::RED . $player->getName() . Color::GRAY . ' ' . $cause . ' ' . Color::GOLD . $damager->getName() . '.');
                         $remain = (count(Arena::getPlayers($arena)) - 1);
                         if ($remain > 1) {
-                            $players->sendMessage(TextFormat::RED . $remain . ' players remain alive.');
+                            $players->sendMessage(Color::RED . $remain . ' players remain alive.');
                         }
                     }
                     $getcoins = SkyWars::getConfigs('Profiles/' . $player->getName());
                     if ($getcoins->get('coins') >= 0) {
                         $getcoins->set('coins', $getcoins->get('coins') - 1);
                         $getcoins->save();
-                        $player->sendMessage(TextFormat::LIGHT_PURPLE . '-1 Coins.');
+                        $player->sendMessage(Color::LIGHT_PURPLE . '-1 Coins.');
                     }
                     $coins = SkyWars::getConfigs('Profiles/' . $damager->getName());
                     $coins->set('coins', $config->get('coins') + 2);
                     $coins->save();
-                    $damager->sendMessage(TextFormat::LIGHT_PURPLE . '+2 Coins.');
+                    $damager->sendMessage(Color::LIGHT_PURPLE . '+2 Coins.');
                 } else {
                     foreach ($player->getWorld()->getPlayers() as $players)  {
-                        $players->sendMessage(TextFormat::RED . $player->getName() . TextFormat::GRAY . ' ' . $cause . '.');
+                        $players->sendMessage(Color::RED . $player->getName() . Color::GRAY . ' ' . $cause . '.');
                         $remain = (count(Arena::getPlayers($arena)) - 1);
                         if ($remain > 1) {
-                            $players->sendMessage(TextFormat::RED . $remain . ' players remain alive.');
+                            $players->sendMessage(Color::RED . $remain . ' players remain alive.');
                         }
                     }
                 }
                 foreach ($player->getDrops() as $drops) {
-                    $player->getWorld()->dropItem($player, $drops);
+                    $player->getWorld()->dropItem(new Vector3($player->getPosition()->getX(), $player->getPosition()->getY(), $player->getPosition()->getZ()), $drops);
                 }
                 self::addStrike(Server::getInstance()->getWorldManager()->getWorldByName($player->getWorld()->getFolderName())->getPlayers(), $player);
                 $player->getEffects()->clear();
-                $player->addEffect(new EffectInstance(Effect::getEffect(Effect::BLINDNESS), 20, 3));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::BLINDNESS(), 20, 3, false));
                 switch (rand(1, 2)) {
                     case 1:
-                        $player->addTitle(TextFormat::BOLD . TextFormat::RED . '¡You died!', TextFormat::YELLOW . 'You lost the game');
+                        $player->sendTitle(Color::BOLD . Color::RED . '¡You died!', Color::YELLOW . 'You lost the game');
                     break;
                     case 2:
-                        $player->addTitle(TextFormat::BOLD . TextFormat::RED . '¡You died!', TextFormat::YELLOW . 'Good luck next time');
+                        $player->sendTitle(Color::BOLD . Color::RED . '¡You died!', Color::YELLOW . 'Good luck next time');
                     break;
                 }
                 $player->teleport(new Vector3($lobby[0], $lobby[1], $lobby[2]));
-                $player->setGamemode(3);
+                $player->setGamemode(GameMode::spectator());
                 $player->setHealth(20);
                 $player->getHungerManager()->setFood(20);
                 $player->getInventory()->clearAll();
                 $player->getArmorInventory()->clearAll();
-                $player->sendMessage(TextFormat::BOLD . TextFormat::GREEN . '» ' . TextFormat::RESET . TextFormat::YELLOW . 'The search for a new game will begin, cancel the wait using the remaining item of the players to continue watching.');
-                if (!in_array($player->getName(), SkyWars::$data['queue'])) {
-                    SkyWars::$data['queue'][] = $player->getName();
-                    SkyWars::getInstance()->getScheduler()->scheduleRepeatingTask(new NewGame($player), 10);
-                }
-                $player->getInventory()->setItem(0, Item::get(381, 0, 1)->setCustomName(TextFormat::GOLD . "Players Reaming\n§r§fClick to select"));
-                $player->getInventory()->setItem(4, Item::get(120, 0, 1)->setCustomName(TextFormat::LIGHT_PURPLE . "Random Game\n§r§fClick to select"));
-                $player->getInventory()->setItem(8, Item::get(355, 14, 1)->setCustomName(TextFormat::RED . "Leave\n§r§fClick to select"));
+                $player->getInventory()->setItem(0, VanillaItems::ENDER_PEARL()->setCount(1)->setCustomName(Color::GOLD . "Players Reaming\n§r§fClick to select"));
+                $player->getInventory()->setItem(4, VanillaBlocks::END_PORTAL_FRAME()->asItem()->setCount(1)->setCustomName(Color::LIGHT_PURPLE . "Random Game\n§r§fClick to select"));
+                $player->getInventory()->setItem(8, VanillaBlocks::BED()->asItem()->setCount(1)->setCustomName(Color::RED . "Leave\n§r§fClick to select"));
             } else {
                 $player->teleport(new Vector3($lobby[0], $lobby[1], $lobby[2]));
             }
@@ -250,7 +228,7 @@ class PluginUtils {
                     SkyWars::$data['kills'][Arena::getName('SW-' . $id)][$player->getName()] = 0;
                     $player->getInventory()->clearAll();
                     $player->getArmorInventory()->clearAll();
-                    $player->sendMessage(TextFormat::GREEN . TextFormat::BOLD . '» ' . TextFormat::RESET . TextFormat::GREEN . 'An available game has been found: ' . 'SW-' . $id);
+                    $player->sendMessage(Color::GREEN . Color::BOLD . '» ' . Color::RESET . Color::GREEN . 'An available game has been found: ' . 'SW-' . $id);
                     $config = SkyWars::getConfigs('Arenas/' . 'SW-' . $id);
                     $lobby = $config->get('lobby');
                     $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(Arena::getName('SW-' . $id))->getSpawnLocation());
@@ -262,19 +240,31 @@ class PluginUtils {
                     $player->setHealth(20);
                     $player->getHungerManager()->setFood(20);
                     $player->setScale(1);
+                    $player->getInventory()->setItem(0, VanillaItems::BOOK()->setCount(1)->setCustomName(Color::LIGHT_PURPLE . "Kits\n§r§fClick to select"));
+                    $player->getInventory()->setItem(3, VanillaItems::COMPASS()->setCount(1)->setCustomName(Color::GREEN . "Start\n§r§fClick to select"));
+                    $player->getInventory()->setItem(4, VanillaItems::TOTEM()->setCount(1)->setCustomName(Color::AQUA . "Settings\n§r§fClick to select"));
+                    $player->getInventory()->setItem(5, VanillaBlocks::CHEST()->asItem()->setCount(1)->setCustomName(Color::GOLD . "Vote Chest\n§r§fClick to select"));
+                    $player->getInventory()->setItem(8, VanillaBlocks::BED()->asItem()->setCount(1)->setCustomName(Color::RED . "Leave\n§r§fClick to select"));
                     foreach ($world->getPlayers() as $players) {
                         $players_array[] = $players->getName();
                     }
-                    $player->sendMessage(TextFormat::GOLD . join(TextFormat::GOLD  . ', ' . TextFormat::GOLD, $players_array) . TextFormat::GOLD . '.');
+                    $player->sendMessage(Color::GOLD . join(Color::GOLD  . ', ' . Color::GOLD, $players_array) . Color::GOLD . '.');
                     $player->getWorld()->addSound($player->getPosition(), new EndermanTeleportSound($player));
                     foreach ($world->getPlayers() as $players) {
-                        $players->sendMessage(TextFormat::GREEN . TextFormat::BOLD . '» ' . TextFormat::RESET . TextFormat::DARK_GRAY . $player->getName() . ' ' . 'Joined the game.' . ' ' . TextFormat::DARK_GRAY . '[' . TextFormat::DARK_GRAY . count($world->getPlayers()) . TextFormat::DARK_GRAY . '/' . TextFormat::DARK_GRAY . Arena::getSpawns('SW-' . $id) . TextFormat::DARK_GRAY . ']');
+                        $players->sendMessage(Color::GREEN . Color::BOLD . '» ' . Color::RESET . Color::DARK_GRAY . $player->getName() . ' ' . 'Joined the game.' . ' ' . Color::DARK_GRAY . '[' . Color::DARK_GRAY . count($world->getPlayers()) . Color::DARK_GRAY . '/' . Color::DARK_GRAY . Arena::getSpawns('SW-' . $id) . Color::DARK_GRAY . ']');
                         $players->getWorld()->addSound($players->getPosition(), new EndermanTeleportSound($players));
                     }
                 }
             }
         }
     }
+
+    public static function viewHealth(Player $player): string {
+        $health = (int)round($player->getHealth() / 2);
+        $greenHearts = str_repeat(Color::GREEN . '❤', $health);
+        $grayHearts = str_repeat(Color::GRAY . '❤', 10 - $health);
+        return $greenHearts . $grayHearts;
+    }    
 
     public static function setZip(string $arena) {
 		$level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
@@ -298,208 +288,200 @@ class PluginUtils {
 			$zip->close();
 		}
 	}
-
+    
     public static function getKit(Player $player, string $value) {
+        $inventory = $player->getInventory();
+        $armorInventory = $player->getArmorInventory();
+        $inventory->clearAll();
+        $armorInventory->clearAll();
+        /*$colorBlack = new Color(0, 0, 0);
+        $colorRed = new Color(255, 0, 0);
+        $colorGreen = new Color(0, 255, 0);*/
+    
         switch ($value) {
             case 'rusher':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(267, 0, 1);
-                $efficiency = Enchantment::getEnchantment(9);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $player->getInventory()->addItem(Item::get(Item::COOKED_PORKCHOP, 0, 8));
-                $player->getInventory()->addItem(Item::get(Item::STONE, 0, 64));
-            break;
+                $dp = VanillaItems::IRON_SWORD()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::EFFICIENCY(), 1));
+                $inventory->addItem($dp);
+                $inventory->addItem(VanillaItems::COOKED_PORKCHOP()->setCount(8));
+                $inventory->addItem(VanillaBlocks::STONE()->asItem()->setCount(64));
+                break;
+    
             case 'baseball':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(280, 0, 1);
-                $efficiency = Enchantment::getEnchantment(12);
-                $efficiency1 = new EnchantmentInstance($efficiency, 3);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-            break;
+                $dp = VanillaItems::STICK()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::KNOCKBACK(), 3));
+                $inventory->addItem($dp);
+                break;
+    
             case 'ghost':
-                $player->getInventory()->clearAll();
-        	    $player->getInventory()->addItem(Item::get(Item::POTION, 7, 1));
-                $player->getInventory()->addItem(Item::get(Item::WOODEN_SWORD, 0, 1));
-            break;
+                $inventory->addItem(VanillaItems::POTION()->setCount(1)->setMeta(7));
+                $inventory->addItem(VanillaItems::WOODEN_SWORD()->setCount(1));
+                break;
+    
             case 'healer':
-                $player->getInventory()->clearAll();
-                $player->getInventory()->addItem(Item::get(Item::SPLASH_POTION, 21, 3));
-                $player->getInventory()->addItem(Item::get(Item::SPLASH_POTION, 29, 2));
-                $player->getInventory()->addItem(Item::get(Item::GOLDEN_APPLE, 0, 3));
-            break;
+                $inventory->addItem(VanillaItems::SPLASH_POTION()->setCount(3)->setMeta(21));
+                $inventory->addItem(VanillaItems::SPLASH_POTION()->setCount(2)->setMeta(29));
+                $inventory->addItem(VanillaItems::GOLDEN_APPLE()->setCount(3));
+                break;
+    
             case 'archer':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(261, 0, 1);
-                $efficiency = Enchantment::getEnchantment(19);
-                $efficiency1 = new EnchantmentInstance($efficiency, 2);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $player->getInventory()->addItem(Item::get(Item::ARROW, 0, 20));
-            break;
+                $dp = VanillaItems::BOW()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::POWER(), 2));
+                $inventory->addItem($dp);
+                $inventory->addItem(VanillaItems::ARROW()->setCount(20));
+                break;
+    
             case 'piromo':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(272, 0, 1);
-                $eff = Enchantment::getEnchantment(9);
-                $eff1 = new EnchantmentInstance($eff, 1);
-                $efficiency = Enchantment::getEnchantment(13);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $dp->addEnchantment($eff1);
-                $player->getInventory()->addItem($dp);
-            break;
+                $dp = VanillaItems::STONE_SWORD()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::FIRE_ASPECT(), 1));
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::EFFICIENCY(), 1));
+                $inventory->addItem($dp);
+                break;
+    
             case 'asesino':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(267, 0, 1);
-                $efficiency = Enchantment::getEnchantment(9);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $boots = Item::get(299, 0, 1);
-                $color = new Color(0, 0, 0);
-                $boots->setCustomColor($color);
-                $player->getArmorInventory()->setChestplate($boots);
-            break;
+                $dp = VanillaItems::IRON_SWORD()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), 1));
+                $inventory->addItem($dp);
+                $chestplate = VanillaItems::LEATHER_CHESTPLATE();
+                /*$chestplate->setCustomColor($colorBlack);*/
+                $armorInventory->setChestplate($chestplate);
+                break;
+    
             case 'lumberhack':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(258, 0, 1);
-                $efficiency = Enchantment::getEnchantment(15);
-                $efficiency1 = new EnchantmentInstance($efficiency, 2);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $player->getInventory()->addItem(Item::get(Item::LOG, 0, 15));
-            break;
+                $dp = VanillaItems::IRON_AXE()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::EFFICIENCY(), 2));
+                $inventory->addItem($dp);
+                $inventory->addItem(VanillaBlocks::OAK_LOG()->asItem()->setCount(15));
+                break;
+    
             case 'enderman':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(368, 0, 2);
-                $player->getInventory()->addItem($dp);
-                $chest = Item::get(Item::LEATHER_CHESTPLATE);
-                $leg = Item::get(Item::LEATHER_LEGGINGS);
-                $boots = Item::get(Item::LEATHER_BOOTS);
-                $color = new Color(0, 0, 0);
-                $chest->setCustomColor($color);
-                $leg->setCustomColor($color);
-                $boots->setCustomColor($color);
-                $player->getArmorInventory()->setChestplate($chest);
-                $player->getArmorInventory()->setLeggings($leg);
-                $player->getArmorInventory()->setBoots($boots);
-            break;
+                $inventory->addItem(VanillaItems::ENDER_PEARL()->setCount(2));
+                $chestplate = VanillaItems::LEATHER_CHESTPLATE();
+                $leggings = VanillaItems::LEATHER_LEGGINGS();
+                $boots = VanillaItems::LEATHER_BOOTS();
+                /*$chestplate->setCustomColor($colorBlack);
+                $leggings->setCustomColor($colorBlack);
+                $boots->setCustomColor($colorBlack);*/
+                $armorInventory->setChestplate($chestplate);
+                $armorInventory->setLeggings($leggings);
+                $armorInventory->setBoots($boots);
+                break;
+    
             case 'rusheryt':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(272, 0, 1);
-                $efficiency = Enchantment::getEnchantment(9);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $player->getInventory()->addItem(Item::get(Item::WOODEN_PLANKS, 0, 20));
-            break;
+                $dp = VanillaItems::STONE_SWORD()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::EFFICIENCY(), 1));
+                $inventory->addItem($dp);
+                $inventory->addItem(VanillaBlocks::OAK_PLANKS()->asItem()->setCount(20));
+                break;
+    
             case 'boomberman':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(259, 0, 1);
-                $player->getInventory()->addItem($dp);
-                $player->getInventory()->addItem(Item::get(Item::TNT, 0, 3));
-                $dp = Item::get(268, 0, 1);
-                $player->getInventory()->addItem($dp);
-                $chest = Item::get(Item::LEATHER_CHESTPLATE);
-                $color = new Color(255, 0, 0);
-                $chest->setCustomColor($color);
-                $player->getArmorInventory()->setChestplate($chest);
-            break;
+                $inventory->addItem(VanillaItems::FLINT_AND_STEEL()->setCount(1));
+                $inventory->addItem(VanillaItems::TNT()->setCount(3));
+                $inventory->addItem(VanillaItems::WOODEN_SWORD()->setCount(1));
+                $chestplate = VanillaItems::LEATHER_CHESTPLATE();
+                /*$chestplate->setCustomColor($colorRed);*/
+                $armorInventory->setChestplate($chestplate);
+                break;
+    
             case 'builder':
-                $player->getInventory()->clearAll();
-                $player->getInventory()->addItem(Item::get(Item::BRICK_BLOCK, 0, 20));
-            break;
+                $inventory->addItem(VanillaBlocks::BRICKS()->asItem()->setCount(20));
+                break;
+    
             case 'tools':
-                $player->getInventory()->clearAll();
-                $dp = Item::get(268, 0, 1);
-                $efficiency = Enchantment::getEnchantment(17);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $dp = Item::get(270, 0, 1);
-                $efficiency = Enchantment::getEnchantment(17);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-                $dp = Item::get(271, 0, 1);
-                $efficiency = Enchantment::getEnchantment(17);
-                $efficiency1 = new EnchantmentInstance($efficiency, 1);
-                $dp->addEnchantment($efficiency1);
-                $player->getInventory()->addItem($dp);
-            break;
+                $dp = VanillaItems::WOODEN_SWORD()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 1));
+                $inventory->addItem($dp);
+                $dp = VanillaItems::WOODEN_PICKAXE()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 1));
+                $inventory->addItem($dp);
+                $dp = VanillaItems::WOODEN_AXE()->setCount(1);
+                $dp->addEnchantment(new EnchantmentInstance(VanillaEnchantments::UNBREAKING(), 1));
+                $inventory->addItem($dp);
+                break;
+    
             case 'saltamontes':
-                $player->getInventory()->clearAll();
-                $chest = Item::get(Item::LEATHER_CHESTPLATE);
-                $leg = Item::get(Item::LEATHER_LEGGINGS);
-                $boots = Item::get(Item::LEATHER_BOOTS);
-                $color = new Color(0, 255, 0);
-                $chest->setCustomColor($color);
-                $leg->setCustomColor($color);
-                $boots->setCustomColor($color);
-                $player->getArmorInventory()->setChestplate($chest);
-                $player->getArmorInventory()->setLeggings($leg);
-                $player->getArmorInventory()->setBoots($boots);
-                $jump = new EffectInstance(Effect::getEffect(8), 20 * 9999, 1); 
-                $player->addEffect($jump);
-                $speed = new EffectInstance(Effect::getEffect(1), 20 * 9999, 0); 
-                $player->addEffect($speed);
-            break;
+                $chestplate = VanillaItems::LEATHER_CHESTPLATE();
+                $leggings = VanillaItems::LEATHER_LEGGINGS();
+                $boots = VanillaItems::LEATHER_BOOTS();
+                $chestplate->setCustomColor($colorGreen);
+                $leggings->setCustomColor($colorGreen);
+                $boots->setCustomColor($colorGreen);
+                $armorInventory->setChestplate($chestplate);
+                $armorInventory->setLeggings($leggings);
+                $armorInventory->setBoots($boots);
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::JUMP_BOOST(), 20 * 9999, 1));
+                $player->getEffects()->add(new EffectInstance(VanillaEffects::SPEED(), 20 * 9999, 0));
+                break;
         }
     }
-    
+
     public static function chestOP(string $arena) {
         $level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
-        foreach ($level->getTiles() as $tiles) {
-            if ($tiles instanceof Chest) {
-                $tiles->getInventory()->clearAll();
-                if ($tiles->getInventory() instanceof ChestInventory) {
-                    for ($i = 0; $i <= 26; $i++) {
-                        $random = rand(1, 3);
-                        if ($random == 1) {
-                            $contents = self::getContentsOP();
-                            $contentstwoOP = self::getContentsTwoOP()[$contents];
-                            $item = Item::get($contentstwoOP[0], $contentstwoOP[1], $contentstwoOP[2]);
-                            if ($item->getId() == Item::DIAMOND_SWORD ||
-                                $item->getId() == Item::IRON_SWORD ||
-                                $item->getId() == Item::STONE_AXE ||
-                                $item->getId() == Item::IRON_AXE ||
-                                $item->getId() == Item::GOLD_SWORD) {
-                                $flame = Enchantment::getEnchantment(Enchantment::FLAME);
-                                $punch = Enchantment::getEnchantment(Enchantment::PUNCH);
-                                $rray = array($flame, $punch);
-                                shuffle($rray);
-                                $item->addEnchantment(new EnchantmentInstance($rray[0], mt_rand(1, 5)));
-                            } else if ($item->getId() == Item::BOW) {
-                                $flame = Enchantment::getEnchantment(Enchantment::FLAME);
-                                $rray = array($flame);
-                                shuffle($rray);
-                                $item->addEnchantment(new EnchantmentInstance($rray[0], mt_rand(1, 5)));
-                            } else if ($item->getId() == Item::DIAMOND_HELMET ||
-                                $item->getId() == Item::IRON_HELMET ||
-                                $item->getId() == Item::GOLD_HELMET ||
-                                $item->getId() == Item::DIAMOND_CHESTPLATE ||
-                                $item->getId() == Item::IRON_CHESTPLATE ||
-                                $item->getId() == Item::GOLD_CHESTPLATE ||
-                                $item->getId() == Item::DIAMOND_LEGGINGS ||
-                                $item->getId() == Item::IRON_LEGGINGS ||
-                                $item->getId() == Item::GOLD_LEGGINGS ||
-                                $item->getId() == Item::DIAMOND_BOOTS ||
-                                $item->getId() == Item::IRON_BOOTS) {
-                                $proteccion = Enchantment::getEnchantment(Enchantment::PROTECTION);
-                                $proteccionfire = Enchantment::getEnchantment(Enchantment::FIRE_PROTECTION);
-                                $rray = array($proteccion, $proteccionfire);
-                                shuffle($rray);
-                                $item->addEnchantment(new EnchantmentInstance($rray[0], mt_rand(1, 5)));
+    
+        if (!$level instanceof World) {
+            Server::getInstance()->getLogger()->error("The world '$arena' could not be found.");
+            return;
+        }
+    
+        foreach ($level->getLoadedChunks() as $chunk) {
+            foreach ($chunk->getTiles() as $tile) {
+                if ($tile instanceof Chest) {
+                    $tile->getInventory()->clearAll();
+                    if ($tile->getInventory() instanceof ChestInventory) {
+                        $usedSlots = [];
+                        for ($i = 0; $i <= 26; $i++) {
+                            $random = rand(1, 3);
+                            if ($random == 1) {
+                                $item = self::getItemChest();
+                                if (!in_array($i, $usedSlots)) {
+                                    if ($item->equals(VanillaItems::DIAMOND_SWORD()) ||
+                                        $item->equals(VanillaItems::DIAMOND_AXE()) ||
+                                        $item->equals(VanillaItems::DIAMOND_PICKAXE()) ||
+                                        $item->equals(VanillaItems::IRON_SWORD()) ||
+                                        $item->equals(VanillaItems::IRON_PICKAXE()) ||
+                                        $item->equals(VanillaItems::IRON_AXE()) ||
+                                        $item->equals(VanillaItems::WOODEN_SWORD()) ||
+                                        $item->equals(VanillaItems::STONE_SWORD()) ||
+                                        $item->equals(VanillaItems::GOLDEN_SWORD()) ||
+                                        $item->equals(VanillaItems::WOODEN_AXE()) ||
+                                        $item->equals(VanillaItems::STONE_AXE()) ||
+                                        $item->equals(VanillaItems::GOLDEN_AXE())) {
+                                        $enchantments = [VanillaEnchantments::SHARPNESS(), VanillaEnchantments::UNBREAKING(), VanillaEnchantments::FIRE_ASPECT()];
+                                        shuffle($enchantments);
+                                        $item->addEnchantment(new EnchantmentInstance($enchantments[0], mt_rand(1, 5)));
+                                    } else if ($item->equals(VanillaItems::BOW())) {
+                                        $enchantments = [VanillaEnchantments::POWER(), VanillaEnchantments::UNBREAKING(), VanillaEnchantments::FLAME()];
+                                        shuffle($enchantments);
+                                        $item->addEnchantment(new EnchantmentInstance($enchantments[0], mt_rand(1, 5)));
+                                    } else if ($item->equals(VanillaItems::DIAMOND_HELMET()) ||
+                                        $item->equals(VanillaItems::IRON_HELMET()) ||
+                                        $item->equals(VanillaItems::GOLDEN_HELMET()) ||
+                                        $item->equals(VanillaItems::LEATHER_CAP()) ||
+                                        $item->equals(VanillaItems::DIAMOND_CHESTPLATE()) ||
+                                        $item->equals(VanillaItems::LEATHER_TUNIC()) ||
+                                        $item->equals(VanillaItems::IRON_CHESTPLATE()) ||
+                                        $item->equals(VanillaItems::GOLDEN_CHESTPLATE()) ||
+                                        $item->equals(VanillaItems::DIAMOND_LEGGINGS()) ||
+                                        $item->equals(VanillaItems::LEATHER_PANTS()) ||
+                                        $item->equals(VanillaItems::IRON_LEGGINGS()) ||
+                                        $item->equals(VanillaItems::GOLDEN_LEGGINGS()) ||
+                                        $item->equals(VanillaItems::DIAMOND_BOOTS()) ||
+                                        $item->equals(VanillaItems::LEATHER_BOOTS()) ||
+                                        $item->equals(VanillaItems::IRON_BOOTS())) {
+                                        $enchantments = [VanillaEnchantments::PROTECTION(), VanillaEnchantments::FIRE_PROTECTION(), VanillaEnchantments::UNBREAKING()];
+                                        shuffle($enchantments);
+                                        $item->addEnchantment(new EnchantmentInstance($enchantments[0], mt_rand(1, 5)));
+                                    }
+                                    $tile->getInventory()->setItem($i, $item);
+                                    $usedSlots[] = $i;
+                                }
                             }
-                            $tiles->getInventory()->setItem($i, $item);
                         }
                     }
                 }
             }
         }
-    }
+    }    
 
     public static function chestDefault(string $arena) {
         $level = Server::getInstance()->getWorldManager()->getWorldByName($arena);
@@ -514,13 +496,15 @@ class PluginUtils {
                 if ($tile instanceof Chest) {
                     $tile->getInventory()->clearAll();
                     if ($tile->getInventory() instanceof ChestInventory) {
+                        $usedSlots = [];
                         for ($i = 0; $i <= 26; $i++) {
                             $random = rand(1, 3);
                             if ($random == 1) {
-                                $contents = self::getContents();
-                                $contentstwo = self::getContentsTwo()[$contents];
-                                $item = Item::get($contentstwo[0], $contentstwo[1], $contentstwo[2]);
-                                $tile->getInventory()->setItem($i, $item);
+                                $item = self::getItemChest();
+                                if (!in_array($i, $usedSlots)) {
+                                    $tile->getInventory()->setItem($i, $item);
+                                    $usedSlots[] = $i;
+                                }
                             }
                         }
                     }
@@ -528,5 +512,63 @@ class PluginUtils {
             }
         }
     }
+
+    private static function getItemChest() {
+        $blocks = [
+            VanillaBlocks::DIORITE()->asItem()->setCount(15),
+            VanillaBlocks::DOUBLE_PITCHER_CROP()->asItem()->setCount(1),
+            VanillaItems::IRON_SWORD()->setCount(1),
+            VanillaItems::DIAMOND_SWORD()->setCount(1),
+            VanillaItems::DIAMOND_AXE()->setCount(1),
+            VanillaItems::DIAMOND_PICKAXE()->setCount(1),
+            VanillaItems::IRON_PICKAXE()->setCount(1),
+            VanillaItems::GOLDEN_APPLE()->setCount(2),
+            VanillaItems::GOLDEN_APPLE()->setCount(4),
+            VanillaItems::ENDER_PEARL()->setCount(1),
+            VanillaItems::COOKED_SALMON()->setCount(3),
+            VanillaItems::COOKED_FISH()->setCount(7),
+            VanillaBlocks::STONE()->asItem()->setCount(32),
+            VanillaBlocks::OAK_PLANKS()->asItem()->setCount(32),
+            VanillaItems::BOW()->setCount(1),
+            VanillaItems::ARROW()->setCount(15),
+            VanillaItems::ARROW()->setCount(10),
+            VanillaItems::SNOWBALL()->setCount(7),
+            VanillaItems::SNOWBALL()->setCount(14),
+            VanillaItems::COMPASS()->setCount(1),
+            VanillaBlocks::STONE()->asItem()->setCount(32),
+            VanillaBlocks::OAK_PLANKS()->asItem()->setCount(32),
+            VanillaBlocks::TNT()->asItem()->setCount(3),
+            VanillaItems::WATER_BUCKET()->setCount(1),
+            VanillaItems::WATER_BUCKET()->setCount(1),
+            VanillaItems::LAVA_BUCKET()->setCount(1),
+            VanillaItems::LAVA_BUCKET()->setCount(1),
+            VanillaItems::WOODEN_SWORD()->setCount(1),
+            VanillaItems::STONE_SWORD()->setCount(1),
+            VanillaItems::GOLDEN_SWORD()->setCount(1),
+            VanillaItems::WOODEN_AXE()->setCount(1),
+            VanillaItems::STONE_AXE()->setCount(1),
+            VanillaItems::GOLDEN_AXE()->setCount(1),
+            VanillaItems::COOKED_PORKCHOP()->setCount(3),
+            VanillaItems::COOKED_CHICKEN()->setCount(3),
+            VanillaItems::BREAD()->setCount(3),
+            VanillaItems::APPLE()->setCount(3),
+            VanillaItems::STICK()->setCount(5),
+            VanillaItems::GOLDEN_HELMET()->setCount(1),
+            VanillaItems::GOLDEN_CHESTPLATE()->setCount(1),
+            VanillaItems::GOLDEN_LEGGINGS()->setCount(1),
+            VanillaItems::GOLDEN_BOOTS()->setCount(1),
+            VanillaItems::DIAMOND_HELMET()->setCount(1),
+            VanillaItems::DIAMOND_CHESTPLATE()->setCount(1),
+            VanillaItems::DIAMOND_LEGGINGS()->setCount(1),
+            VanillaItems::DIAMOND_BOOTS()->setCount(1),
+            VanillaItems::LEATHER_CAP()->setCount(1),
+            VanillaItems::LEATHER_TUNIC()->setCount(1),
+            VanillaItems::LEATHER_PANTS()->setCount(1),
+            VanillaItems::LEATHER_BOOTS()->setCount(1)
+        ];
+    
+        return $blocks[array_rand($blocks)];
+    }
+    
 }
 ?>

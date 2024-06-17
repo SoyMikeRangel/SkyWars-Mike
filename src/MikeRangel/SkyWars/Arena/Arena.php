@@ -16,7 +16,7 @@ class Arena {
 		$expectedArena = Server::getInstance()->getWorldManager()->getWorldByName(self::getName($arena));
 		if($expectedArena != null){
             foreach ($expectedArena->getPlayers() as $player) {
-                if ($player->getGamemode() === GameMode::SURVIVAL() || $player->getGamemode() === GameMode::ADVENTURE()) {
+                if ($player->isSurvival() || $player->isAdventure()) {
                 	$players[] = $player->getName();
             	}
         	}
@@ -29,7 +29,7 @@ class Arena {
 		$expectedArena = Server::getInstance()->getWorldManager()->getWorldByName(self::getName($arena));
 		if($expectedArena != null){
         	foreach ($expectedArena->getPlayers() as $player) {
-            	if ($player->getGamemode() === GameMode::SPECTATOR()) {
+            	if ($player->isSpectator()) {
                 	$specters[] = $player->getName();
             	}
         	}
@@ -75,7 +75,7 @@ class Arena {
             'arena' => $arena,
             'maxslots' => $slots,
             'status' => 'editing',
-            'lobbytime' => 40,
+            'lobbytime' => 30,
             'startingtime' => 11,
             'gametime' => 600,
             'refilltime' => 120,
