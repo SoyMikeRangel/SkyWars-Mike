@@ -4,9 +4,6 @@
     <a href="https://discord.com/channels/SoyMikeRangel#3325">
         <img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg" alt="discord">
     </a>
-    <a href="https://github.com/SoyMikeRangel/SkyWars-Mike/blob/master/LICENSE">
-        <img src="https://img.shields.io/badge/license-Apache%20License%202.0-yellowgreen.svg" alt="license">
-    </a>
     <br><br>
     <h3>Instrucciones:</h3>
     <p>De manera propia hice que solo pueda configurar la arena uno a la vez, pueden editarlo en ese caso pero de mi parte, es todo.<p>
