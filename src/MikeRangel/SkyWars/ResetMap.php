@@ -58,4 +58,3 @@ class ResetMap {
         return rmdir($dir);
     }
 }
-?>

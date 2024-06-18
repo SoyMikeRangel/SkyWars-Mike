@@ -132,4 +132,3 @@ class SkyWars extends PluginBase {
         $this->getLogger()->info(Color::RED . 'Plugin disabled.');
     }
 }
-?>

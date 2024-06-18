@@ -46,4 +46,3 @@ class EntityStatsUpdate extends Task {
         return $title . $subtitles;
     }
 }
-?>

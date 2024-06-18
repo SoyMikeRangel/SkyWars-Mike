@@ -35,4 +35,3 @@ class EntityHuman extends Human {
         return '';
     }
 }
-?>

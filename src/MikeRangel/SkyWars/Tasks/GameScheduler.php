@@ -337,4 +337,3 @@ class GameScheduler extends Task {
         }
     }
 }
-?>

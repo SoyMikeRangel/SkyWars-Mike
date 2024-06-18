@@ -545,4 +545,3 @@ class FormManager {
         return $buttons;
     }
 }
-?>

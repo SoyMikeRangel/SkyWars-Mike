@@ -72,4 +72,3 @@ class ScoreAPI {
         return $this->scoreboards[$pl->getName()] ?? null;
     }
 }
-?>

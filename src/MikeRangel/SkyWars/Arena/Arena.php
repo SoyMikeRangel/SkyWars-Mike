@@ -210,4 +210,3 @@ class Arena {
         return $config->get('endtime');
     }
 }
-?>

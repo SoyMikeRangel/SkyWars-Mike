@@ -43,4 +43,3 @@ class EntityUpdate extends Task {
         return count($players);
     }
 }
-?>

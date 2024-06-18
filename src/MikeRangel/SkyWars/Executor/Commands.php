@@ -125,4 +125,3 @@ class Commands extends Command {
         return true;
     }
 }
-?>
