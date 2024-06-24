@@ -66,12 +66,12 @@ final class EntityManager {
     
         $entityClass = "\\MikeRangel\\SkyWars\\Entity\\types\\" . $entityType;
         if (class_exists($entityClass)) {
-            $entity = new $entityClass($player->getWorld(), $nbt);
+            $entity = new $entityClass($location, $skin, $nbt);
             if ($entity !== null) {
                 $entity->spawnToAll();
             }
         } else {
             $player->sendMessage(Color::RED . 'Entity type not found: ' . Color::GREEN . $entityType);
         }
-    }
+    }    
 }

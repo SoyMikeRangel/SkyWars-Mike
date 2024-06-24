@@ -6,34 +6,28 @@ declare(strict_types=1);
  * Status: @PacmanLivePE
 */
 namespace MikeRangel\SkyWars\Entity\types;
+
 use pocketmine\entity\Human;
-use pocketmine\world\World;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\entity\Skin;
-use pocketmine\math\Vector3;
-use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\Location;
 
 class EntityStats extends Human {
 
-    public function __construct(World $world, CompoundTag $nbt) {
-        $skinTag = $nbt->getCompoundTag("Skin");
-        $skin = new Skin(
-            $skinTag->getString("Name"),
-            $skinTag->getString("Data"),
-            $skinTag->getString("CapeData"),
-            $skinTag->getString("GeometryName"),
-            $skinTag->getString("GeometryData")
-        );
-
-        $location = EntityDataHelper::parseLocation($nbt, $world);
+    public function __construct(Location $location, Skin $skin, CompoundTag $nbt) {
         parent::__construct($location, $skin);
         $this->setNameTagVisible(true);
         $this->setNameTagAlwaysVisible(true);
         $this->setSkin(new Skin('textfloat', $this->getInvisibleSkin()));
+        $this->initialize();
+    }
+
+    public function initialize() {
+        $this->setNameTag("EntityStats");
     }
 
     public function getName(): string {
-        return '';
+        return 'EntityStats';
     }
 
     public function getInvisibleSkin() {

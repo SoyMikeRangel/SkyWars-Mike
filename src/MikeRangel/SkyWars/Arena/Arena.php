@@ -16,7 +16,7 @@ class Arena {
 		$expectedArena = Server::getInstance()->getWorldManager()->getWorldByName(self::getName($arena));
 		if($expectedArena != null){
             foreach ($expectedArena->getPlayers() as $player) {
-                if ($player->isSurvival() || $player->isAdventure()) {
+                if ($player->isSurvival()) {
                 	$players[] = $player->getName();
             	}
         	}

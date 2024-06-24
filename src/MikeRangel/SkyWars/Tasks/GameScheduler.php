@@ -252,10 +252,14 @@ class GameScheduler extends Task {
                                     if ($players[1] != null) {
                                         $medium = array_search($players[1], $kills);
                                         $top2 = Color::YELLOW . '#2 ' . Color::WHITE . $medium . Color::GOLD . ' - ' . Color::GREEN . $players[1];
+                                    } else {
+                                        $top2 = Color::YELLOW . '#2 ' . Color::WHITE . 'Null' . Color::GOLD . ' - ' . Color::GREEN . '0';
                                     }
                                     if ($players[2] != null) {
                                         $minimun = array_search($players[2], $kills);
                                         $top3 = Color::RED . '#3 ' . Color::WHITE . $minimun . Color::GOLD . ' - ' . Color::GREEN . $players[2];
+                                    }else {
+                                        $top3 = Color::RED . '#3 ' . Color::WHITE . 'Null' . Color::GOLD . ' - ' . Color::GREEN . '0';
                                     }
                                     Server::getInstance()->broadcastMessage(Color::GRAY . '=(' . Color::DARK_AQUA . 'Top Kills' . Color::GRAY . ')=' . "\n" .
                                     Color::GRAY . '================' . "\n" .

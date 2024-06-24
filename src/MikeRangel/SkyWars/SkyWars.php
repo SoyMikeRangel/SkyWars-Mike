@@ -93,13 +93,16 @@ class SkyWars extends PluginBase {
     }
 
     public function loadEntitys(): void {
-        $entities = [EntityHuman::class, EntityStats::class];
-        foreach ($entities as $entityClass) {
+        $entities = [
+            EntityHuman::class => 'entityhuman',
+            EntityStats::class => 'entitystats'
+        ];
+        foreach ($entities as $entityClass => $entityId) {
             EntityFactory::getInstance()->register($entityClass, function(World $world, CompoundTag $nbt) use ($entityClass): Entity {
                 $location = EntityDataHelper::parseLocation($nbt, $world);
                 $skin = Human::parseSkinNBT($nbt);
                 return new $entityClass($location, $skin, $nbt);
-            }, [$entityClass::getNetworkTypeId()]);
+            }, [$entityId]);
         }
     }
 

@@ -11,8 +11,7 @@ use pocketmine\{Server, player\Player, utils\TextFormat as Color, entity\effect\
 
 class EntityUpdate extends Task {
     public function onRun(): void {
-        $defaultWorld = Server::getInstance()->getWorldManager()->getDefaultWorld();
-        foreach ($defaultWorld->getEntities() as $entity) {
+        foreach (Server::getInstance()->getWorldManager()->getDefaultWorld()->getEntities() as $entity) {
             if ($entity instanceof EntityHuman) {
                 $entity->getEffects()->add(new EffectInstance(VanillaEffects::FIRE_RESISTANCE(), 999));
                 $entity->setNameTag(self::setName());

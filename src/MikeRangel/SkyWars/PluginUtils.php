@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Server: @PacmanLivePE 
 */
 namespace MikeRangel\SkyWars;
-use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Tasks\NewGame, Tasks\ArenaID};
+use MikeRangel\SkyWars\{SkyWars, Arena\Arena, Tasks\NewGame, Tasks\ArenaID, Entity\EntityManager};
 use pocketmine\{Server, world\World, player\Player, player\GameMode, item\Item, block\tile\Chest, block\inventory\ChestInventory, entity\effect\EffectInstance, entity\effect\VanillaEffects, math\Vector3, entity\Entity, block\Block, item\VanillaItems, block\VanillaBlocks, utils\TextFormat as Color};
 use pocketmine\network\mcpe\protocol\{AddActorPacket, ActorEventPacket, PlaySoundPacket, LevelSoundEventPacket, StopSoundPacket, types\entity\EntityIds, types\entity\PropertySyncData, types\LevelSoundEvent};
 use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance, VanillaEnchantments};
